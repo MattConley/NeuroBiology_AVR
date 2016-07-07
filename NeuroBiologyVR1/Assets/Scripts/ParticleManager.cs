@@ -20,6 +20,11 @@ public class ParticleManager : MonoBehaviour
         }
     }
 
+    public void addParticle(MovingChargedParticle mcp)
+    {
+        StartCoroutine(Cycle(mcp));
+    }
+
     public IEnumerator Cycle(MovingChargedParticle mcp)
     {
         bool isFirst = true;
