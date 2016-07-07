@@ -1,0 +1,25 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public GameObject NegativeIon;
+
+
+public void Update()
+{
+    if (Input.GetButtonDown("Fire1"))
+        PutAnion(Input.mousePosition);
+}
+
+public void PutAnion(Vector2 mousePosition)
+{
+    RaycastHit hit = RayFromCamera(mousePosition, 1000.0f);
+    GameObject.Instantiate(NegativeIon, hit.point, Quaternion.identity);
+}
+
+public RaycastHit RayFromCamera(Vector3 mousePosition, float rayLength)
+{
+    RaycastHit hit;
+    Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+    Physics.Raycast(ray, out hit, rayLength);
+    return hit;
+}

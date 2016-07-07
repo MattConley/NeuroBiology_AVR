@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{31181CC8-4FE9-6B8C-1CFF-3374B41E8608}") = "NeuroBiologyVR", "Assembly-CSharp.csproj", "{32F5D3CD-9C3E-23DE-AEA6-9FDF2859EC2D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{32F5D3CD-9C3E-23DE-AEA6-9FDF2859EC2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32F5D3CD-9C3E-23DE-AEA6-9FDF2859EC2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32F5D3CD-9C3E-23DE-AEA6-9FDF2859EC2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32F5D3CD-9C3E-23DE-AEA6-9FDF2859EC2D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
