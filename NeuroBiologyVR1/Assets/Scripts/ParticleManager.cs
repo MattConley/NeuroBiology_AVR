@@ -22,6 +22,8 @@ public class ParticleManager : MonoBehaviour
 
     public void addParticle(MovingChargedParticle mcp)
     {
+        chargedParticles.Add(mcp);
+        movingChargedParticles.Add(mcp);
         StartCoroutine(Cycle(mcp));
     }
 
