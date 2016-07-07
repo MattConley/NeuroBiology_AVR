@@ -13,8 +13,8 @@ public class SpawnManager : MonoBehaviour
         {
             GameObject ionInstance;
             ionInstance = Instantiate(IonSpawn, SpawnPosition.position, SpawnPosition.rotation) as GameObject;
-            ionInstance.GetComponent<Rigidbody>.initialVelocity
-            ionInstance.velocity = new Vector3(0, 10, 0);
+            ionInstance.AddComponent<Rigidbody>();
+            ionInstance.GetComponent<Rigidbody>().velocity = new Vector3(0, 10, 0);
          }
     }
 }
