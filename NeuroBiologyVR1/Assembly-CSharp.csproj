@@ -46,9 +46,14 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraMotion.cs" />
+     <Compile Include="Assets\Scripts\ChargedCloud.cs" />
      <Compile Include="Assets\Scripts\ChargedParticle.cs" />
+     <Compile Include="Assets\Scripts\DontGoThroughThings.cs" />
      <Compile Include="Assets\Scripts\MovingChargedParticle.cs" />
+     <Compile Include="Assets\Scripts\NegativeIonTrigger1.cs" />
      <Compile Include="Assets\Scripts\ParticleManager.cs" />
+     <Compile Include="Assets\Scripts\PostiveIonTrigger.cs" />
+     <Compile Include="Assets\Scripts\ScoreTracker.cs" />
      <Compile Include="Assets\Scripts\SpawnManager.cs" />
      <Compile Include="Assets\Scripts\Transparency.cs" />
  <Reference Include="UnityEngine.UI">

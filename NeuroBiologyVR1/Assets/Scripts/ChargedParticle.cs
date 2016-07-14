@@ -7,7 +7,7 @@ public class ChargedParticle : MonoBehaviour {
         UpdateColor();
     }
     public void UpdateColor(){
-        Color color = charge > 0 ? Color.blue : Color.red;
+        Color color = charge > 0 ? Color.red : Color.blue;
         GetComponent<Renderer>().material.color = color;
     }
 }
