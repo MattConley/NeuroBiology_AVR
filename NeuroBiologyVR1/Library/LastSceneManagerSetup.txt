@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Patch.unity
+- path: Assets/Scenes/ElectrochemicalGradient.unity
   isLoaded: 1
   isActive: 1
