@@ -24,6 +24,10 @@ public class NegativeIonTrigger1 : MonoBehaviour {
                 ScoreTracker.UpdateOutsideDistribution(1);
                 ChargedCloud.UpdateColorCloud(-1);
                 break;
-        }
+            case "Boundary":
+                Destroy(gameObject);
+                break;
+        
+    }
     }
 }
