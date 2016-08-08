@@ -9,25 +9,52 @@ public class Prompt_Behavior : MonoBehaviour {
 
     public Camera player_cam;
 
-    private int clickStatus = 0;
-    public int cCounter = 0;
+    //private int clickStatus = 0;
+    public bool isContinue;
+    public float contTime;
 
-    public ParticleSystem part_pipette;
+    private bool notDone = true;
+
+    //public ParticleSystem part_pipette;
 
 	// Use this for initialization
 	void Start () {
         this.transform.LookAt(player_cam.transform);
+        if (isContinue)
+        {
+            this.GetComponent<MeshRenderer>().enabled = false;
+            //StartCoroutine(TimeEnable());
+        }
+        else
+        {
+            contTime = 0.0F;
+            notDone = false;
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
         this.transform.LookAt(player_cam.transform);
-        if (Input.GetMouseButtonDown(0))
+        if (notDone&&isContinue)
         {
-            StartCoroutine(mouseClick());
+            if(Time.realtimeSinceStartup > contTime)
+            {
+                this.GetComponent<MeshRenderer>().enabled = true;
+            }
         }
     }
 
+    IEnumerator TimeEnable()
+    {
+        if(Time.realtimeSinceStartup > contTime)
+        {
+            this.GetComponent<MeshRenderer>().enabled = true;
+            yield return null;
+        }
+        
+    }
+
+    /*
     IEnumerator mouseClick()
     {
         cCounter++;
@@ -53,6 +80,6 @@ public class Prompt_Behavior : MonoBehaviour {
                 break;
         }
     }
-
+    */
 
 }
