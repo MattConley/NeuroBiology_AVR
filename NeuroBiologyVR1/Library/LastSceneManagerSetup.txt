@@ -1,4 +1,8 @@
 sceneSetups:
+<<<<<<< HEAD
 - path: Assets/Scenes/CableView.unity
+=======
+- path: Assets/Scenes/CellView.unity
+>>>>>>> 6468041c79ec2aa5a66202313a1571038e253e3d
   isLoaded: 1
   isActive: 1
