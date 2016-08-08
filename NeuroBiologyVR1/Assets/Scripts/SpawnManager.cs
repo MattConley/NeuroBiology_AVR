@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 
 public class SpawnManager : MonoBehaviour
 {
-    public int initialVelocity = 10;
+    public int initialVelocity = 3;
     public GameObject IonSpawn;
     public Transform SpawnPosition;
     

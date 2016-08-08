@@ -81,8 +81,14 @@ public class Prompt_Behavior : MonoBehaviour {
                 //Second Click
                 this.GetComponent<MeshRenderer>().enabled = false;
                 //Scene Change
+                LoadScene(2);
                 yield return null;
                 break;
         }
     }
+    public void LoadScene(int level)
+    {
+        Application.LoadLevel(level);
+    }
 }
+
