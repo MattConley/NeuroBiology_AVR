@@ -24,7 +24,9 @@ public class PostiveIonTrigger : MonoBehaviour
                 ChargedCloud.UpdateColorCloud(-1);
                 break;
             case "Boundary":
-                Destroy(gameObject);
+                GameObject ionInstance = gameObject;
+                this.GetComponent<ParticleManager>().minusParticle(ionInstance.GetComponent<MovingChargedParticle>());
+                Destroy(ionInstance);
                 break;
         }
     }

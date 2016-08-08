@@ -26,7 +26,12 @@ public class ParticleManager : MonoBehaviour
         movingChargedParticles.Add(mcp);
         StartCoroutine(Cycle(mcp));
     }
-
+    public void minusParticle(MovingChargedParticle mcp)
+    {
+        chargedParticles.Remove(mcp);
+        movingChargedParticles.Remove(mcp);
+        
+    }
     public IEnumerator Cycle(MovingChargedParticle mcp)
     {
         bool isFirst = true;

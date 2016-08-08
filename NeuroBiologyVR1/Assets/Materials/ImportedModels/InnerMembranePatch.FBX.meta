@@ -1,15 +1,32 @@
 fileFormatVersion: 2
-guid: 8f12eb769135ede4f856e83126f11321
-timeCreated: 1468442242
+guid: 1aef2ec03bc6d9d4486d149ee254bd7c
+timeCreated: 1470062390
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Object001
+    100004: Object002
+    100006: Tube001
+    100008: Tube002
     400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Box001
+    400002: Object001
+    400004: Object002
+    400006: Tube001
+    400008: Tube002
+    2300000: Object001
+    2300002: Object002
+    2300004: Tube001
+    2300006: Tube002
+    3300000: Object001
+    3300002: Object002
+    3300004: Tube001
+    3300006: Tube002
+    4300000: Tube001
+    4300002: Object001
+    4300004: Object002
+    4300006: Tube002
     9500000: //RootNode
   materials:
     importMaterials: 1

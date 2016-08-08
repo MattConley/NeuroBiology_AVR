@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/IOS_Electrochem.unity
+- path: C:/Users/William Kodama/AppData/Local/Temp/Temp1_$particlemovement_110.zip/ParticleMovement/Assets/exampleScene.unity
   isLoaded: 1
   isActive: 1

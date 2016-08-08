@@ -62,3 +62,4 @@ C:\Users\William Kodama\Documents\NeuroBiology_AVR\NeuroBiologyVR1\obj\Debug\Ass
 C:\Users\William Kodama\Documents\NeuroBiology_AVR\NeuroBiologyVR1\obj\Debug\Assembly-CSharp.dll
 C:\Users\William Kodama\Documents\NeuroBiology_AVR\NeuroBiologyVR1\obj\Debug\Assembly-CSharp.pdb
 C:\Users\William Kodama\Documents\NeuroBiology_AVR\NeuroBiologyVR1\Temp\bin\Debug\Google.ProtocolBuffers.dll
+C:\Users\William Kodama\Documents\NeuroBiology_AVR\NeuroBiologyVR1\Temp\bin\Debug\Assembly-CSharp-firstpass.pdb
