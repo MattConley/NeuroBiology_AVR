@@ -1,4 +1,4 @@
 sceneSetups:
-- path: C:/Users/William Kodama/AppData/Local/Temp/Temp1_$particlemovement_110.zip/ParticleMovement/Assets/exampleScene.unity
+- path: Assets/Scenes/CableView.unity
   isLoaded: 1
   isActive: 1

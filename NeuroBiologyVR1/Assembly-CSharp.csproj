@@ -95,6 +95,7 @@
      <Compile Include="Assets\Scripts\NegativeIonTrigger1.cs" />
      <Compile Include="Assets\Scripts\ParticleManager.cs" />
      <Compile Include="Assets\Scripts\PostiveIonTrigger.cs" />
+     <Compile Include="Assets\Scripts\Prompt_Behavior.cs" />
      <Compile Include="Assets\Scripts\ScoreTracker.cs" />
      <Compile Include="Assets\Scripts\SpawnManager.cs" />
      <Compile Include="Assets\Scripts\StimulateCell.cs" />
