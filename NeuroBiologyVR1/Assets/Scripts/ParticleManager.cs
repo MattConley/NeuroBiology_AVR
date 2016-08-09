@@ -5,26 +5,29 @@ using System.Collections.Generic;
 public class ParticleManager : MonoBehaviour
 {
     private float samplingInterval = 0.01f;
-    private List<ChargedParticle> chargedParticles;
-    private List<MovingChargedParticle> movingChargedParticles;
+    public List<ChargedParticle> chargedParticles;
+    public List<MovingChargedParticle> movingChargedParticles;
 
     // Use this for initialization
     void Start()
     {
+        createList();
+    }
+    public void createList()
+    {
         chargedParticles = new List<ChargedParticle>(FindObjectsOfType<ChargedParticle>());
         movingChargedParticles = new List<MovingChargedParticle>(FindObjectsOfType<MovingChargedParticle>());
 
-        foreach(MovingChargedParticle mcp in movingChargedParticles)
+        foreach (MovingChargedParticle mcp in movingChargedParticles)
         {
             StartCoroutine(Cycle(mcp));
         }
     }
-
     public void addParticle(MovingChargedParticle mcp)
     {
         chargedParticles.Add(mcp);
         movingChargedParticles.Add(mcp);
-        StartCoroutine(Cycle(mcp));
+        createList();
     }
     public void minusParticle(MovingChargedParticle mcp)
     {

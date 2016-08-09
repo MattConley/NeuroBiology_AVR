@@ -29,31 +29,31 @@ public class VR_ClickMover : MonoBehaviour {
 	void Update () {
         //cam_direction = player_body.forward;
         //Debug.Log("" + cam_direction);
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKey(KeyCode.W))
         {
             cam_direction = player_viewer.forward;
             //player_transform.position = player_transform.position + cam_direction * moveLen;
             player_rbody.velocity = new Vector3(cam_direction.x * moveSpeed, cam_direction.y * moveSpeed, cam_direction.z * moveSpeed);
             //player_rbody.AddForce(cam_direction.x * moveSpeed, cam_direction.y * moveSpeed, cam_direction.z * moveSpeed);
         }
-        else if (Input.GetKeyDown(KeyCode.A))
+        else if (Input.GetKey(KeyCode.A))
         {
             cam_direction = new Vector3(player_viewer.right.x*-1, player_viewer.right.y * -1, player_viewer.right.z * -1);
             player_rbody.velocity = new Vector3(cam_direction.x * moveSpeed, cam_direction.y * moveSpeed, cam_direction.z * moveSpeed);
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
         {
             cam_direction = player_viewer.right;
             player_rbody.velocity = new Vector3(cam_direction.x * moveSpeed, cam_direction.y * moveSpeed, cam_direction.z * moveSpeed);
         }
-        else if (Input.GetKeyDown(KeyCode.S))
+        else if (Input.GetKey(KeyCode.S))
         {
             cam_direction = new Vector3(player_viewer.forward.x * -1, player_viewer.forward.y * -1, player_viewer.forward.z * -1);
             player_rbody.velocity = new Vector3(cam_direction.x * moveSpeed, cam_direction.y * moveSpeed, cam_direction.z * moveSpeed);
         }
         else
         {
-            player_rbody.AddForce(player_rbody.velocity.x / -slowRate, player_rbody.velocity.y / -slowRate, player_rbody.velocity.z / -slowRate);
+            player_rbody.velocity = new Vector3(0,0,0);
         }
 #if (UNITY_IPHONE)
         if (GvrController.ClickButton)
