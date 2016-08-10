@@ -6,11 +6,7 @@ using System.Collections;
 
 
 public class Prompt_Behavior : MonoBehaviour {
-
-    private int clickStatus = 0;
-    public int cCounter = 0;
-
-    public ParticleSystem part_pipette;
+    
 
     //private int clickStatus = 0;
     public bool isContinue;
@@ -37,10 +33,6 @@ public class Prompt_Behavior : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetMouseButtonDown(0))
-        {
-            StartCoroutine(mouseClick());
-        }
         if (notDone&&isContinue)
         {
             if(Time.realtimeSinceStartup > contTime)
@@ -49,46 +41,6 @@ public class Prompt_Behavior : MonoBehaviour {
             }
         }
     }
-
-    IEnumerator TimeEnable()
-    {
-        if(Time.realtimeSinceStartup > contTime)
-        {
-            this.GetComponent<MeshRenderer>().enabled = true;
-            yield return null;
-        }
-        
-    }
-
-    IEnumerator mouseClick()
-    {
-        cCounter++;
-        switch (clickStatus)
-        {
-            case 0:
-                //first click
-                this.GetComponent<MeshRenderer>().enabled = false;
-                //part_pipette.startDelay = 0;
-                ParticleSystem pSystem = (ParticleSystem)Instantiate(part_pipette, part_pipette.transform.position, part_pipette.transform.rotation);
-                pSystem.startDelay = 0;
-                //wait for animation
-                yield return new WaitForSeconds(2);
-                this.GetComponent<MeshRenderer>().enabled = true;
-                this.GetComponent<TextMesh>().text = "Click to Zoom";
-                clickStatus++;
-                break;
-            case 1:
-                //Second Click
-                this.GetComponent<MeshRenderer>().enabled = false;
-                //Scene Change
-                LoadScene(2);
-                yield return null;
-                break;
-        }
-    }
-    public void LoadScene(int level)
-    {
-        Application.LoadLevel(level);
-    }
+    
 }
 
