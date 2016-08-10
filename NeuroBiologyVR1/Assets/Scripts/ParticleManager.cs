@@ -33,7 +33,7 @@ public class ParticleManager : MonoBehaviour
     {
         chargedParticles.Remove(mcp);
         movingChargedParticles.Remove(mcp);
-        
+        createList();
     }
     public IEnumerator Cycle(MovingChargedParticle mcp)
     {
