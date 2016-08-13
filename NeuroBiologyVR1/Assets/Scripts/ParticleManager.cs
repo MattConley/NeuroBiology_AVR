@@ -31,8 +31,9 @@ public class ParticleManager : MonoBehaviour
     }
     public void minusParticle(MovingChargedParticle mcp)
     {
-        chargedParticles.Remove(mcp);
-        movingChargedParticles.Remove(mcp);
+        //chargedParticles.Remove(mcp);
+        //movingChargedParticles.Remove(mcp);
+        Destroy(mcp);
         createList();
     }
     public IEnumerator Cycle(MovingChargedParticle mcp)
@@ -67,6 +68,7 @@ public class ParticleManager : MonoBehaviour
             direction.Normalize(); //Just care for the direction so magnitude does not matter here.
 
             newForce += force * direction * samplingInterval; //new force vector that results from all the different forces *directions * interval.
+
 
             if (float.IsNaN(newForce.x))
             {

@@ -7,10 +7,17 @@ public class PostiveIonTrigger : MonoBehaviour
     {
         switch (pIEnter.tag)
         {
+            //THIS CASE IS FOR THE INSIDE THE MEMBRANE IN THE CABLE VIEW
             case "InnerMembrane":
                 ScoreTracker.UpdateInsideDistribution(1);
                 ScoreTracker.UpdateOutsideDistribution(-1);
-                ChargedCloud.UpdateColorCloud(1);
+                //ChargedCloud.UpdateColorCloud(1);
+                break;
+            // THIS CASE IS FOR THE PERMEABLE MEMBRANE IN THE PATCH VIEW
+            case "PermeableTrig":
+               // pIEnter.enabled = false;
+                ScoreTracker.UpdateInsideDistribution(-1);
+                ScoreTracker.UpdateOutsideDistribution(1);
                 break;
         }
     }
@@ -18,18 +25,24 @@ public class PostiveIonTrigger : MonoBehaviour
     {
         switch (pIExit.tag)
         {
+            //THIS CASE IS FOR THE INSIDE THE MEMBRANE IN THE CABLE VIEW
             case "InnerMembrane":
                 ScoreTracker.UpdateInsideDistribution(-1);
                 ScoreTracker.UpdateOutsideDistribution(1);
-                ChargedCloud.UpdateColorCloud(-1);
+                //ChargedCloud.UpdateColorCloud(-1);
                 break;
             case "Boundary":
-                //GameObject ionInstance = gameObject;
-                //this.GetComponent<ParticleManager>().minusParticle(ionInstance.GetComponent<MovingChargedParticle>());
-                //Destroy(ionInstance);
+                //GetComponent<ParticleManager>().minusParticle(gameObject.GetComponent<MovingChargedParticle>());
+                //gameObject.SetActive(false);
                 Destroy(gameObject);
+
+                break;
+            // THIS CASE IS FOR THE PERMEABLE MEMBRANE IN THE PATCH VIEW
+            case "PermeableTrig":
+                //pIExit.enabled = false;
+                ScoreTracker.UpdateInsideDistribution(1);
+                ScoreTracker.UpdateOutsideDistribution(-1);
                 break;
         }
     }
-
 }

@@ -1,13 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+public class Zoom_Behavior : MonoBehaviour {
 
-public class LoadOnClick : MonoBehaviour
-{
-
-    public GameObject loadingImage;
-    public GameObject Canvas;
- 
+    public ParticleSystem part_pipette;
+    private bool isEnabled;
+    public int scene;
     public GUITexture overlay;
     public float fadeTime;
     void Awake()
@@ -17,11 +15,25 @@ public class LoadOnClick : MonoBehaviour
         //fade to clear
         StartCoroutine(FadetoClear());
     }
+
+    // Use this for initialization
+    void Start () {
+        isEnabled = true;
+	}
+
+    void OnMouseDown()
+    {
+        if (isEnabled)
+        {
+            LoadScene(scene);
+        }
+    }
+
     public void LoadScene(int level)
     {
         StartCoroutine(FadetoWhite(() => Application.LoadLevel(level)));
-        
     }
+
     private IEnumerator FadetoClear()
     {
         overlay.gameObject.SetActive(true);
@@ -30,7 +42,7 @@ public class LoadOnClick : MonoBehaviour
         float rate = 1.0f / fadeTime;
 
         float progress = 0.0f;
-        //
+        
         while (progress < 1.0f)
         {
             overlay.color = Color.Lerp(Color.black, Color.clear, progress);
@@ -39,7 +51,7 @@ public class LoadOnClick : MonoBehaviour
 
             yield return null;
         }
-        Canvas.SetActive(true);
+        
         overlay.color = Color.clear;
         overlay.gameObject.SetActive(false);
     }
