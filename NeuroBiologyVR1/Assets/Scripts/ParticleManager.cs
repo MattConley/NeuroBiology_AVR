@@ -31,15 +31,15 @@ public class ParticleManager : MonoBehaviour
     }
     public void minusParticle(MovingChargedParticle mcp)
     {
-        //chargedParticles.Remove(mcp);
-        //movingChargedParticles.Remove(mcp);
-        Destroy(mcp);
-        createList();
+        chargedParticles.Remove(mcp);
+        movingChargedParticles.Remove(mcp);
+        //Destroy(mcp);
+        //createList();
     }
     public IEnumerator Cycle(MovingChargedParticle mcp)
     {
         bool isFirst = true;
-        while (true)
+        while (mcp != null)
         {
             if (isFirst)
             {
@@ -60,7 +60,12 @@ public class ParticleManager : MonoBehaviour
             {
             continue;
             }
-               
+
+            if (mcp == null)
+            {
+                continue;
+            }
+
             float distance = Vector3.Distance(mcp.transform.position, cp.gameObject.transform.position); // Distance between two charged particles.
             float force = 1000 * mcp.charge * cp.charge / Mathf.Pow(distance, 2); //Relatively good scale number, and F = (q*q)/d^2 (Coulombs Law).
 

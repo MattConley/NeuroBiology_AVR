@@ -11,6 +11,7 @@ public class SpawnManager : MonoBehaviour
     public float spawnRate;
     private float nextSpawn = 0.0F;
     //-------------------------------------------------------
+    /*
     public int pooledAmount = 80;
     public List<GameObject> postiveIons;
     public List<PostiveIonTrigger> Lattice;
@@ -63,8 +64,8 @@ public class SpawnManager : MonoBehaviour
                 }
             }
         }
-    }
-    /*void Update()
+    }*/
+    void Update()
     {
 
         if (Input.GetMouseButton(0) && Time.time > nextSpawn)
@@ -81,7 +82,7 @@ public class SpawnManager : MonoBehaviour
         }
 
     }
-    */
+    /**/
 
 }
 

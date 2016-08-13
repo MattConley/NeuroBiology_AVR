@@ -32,9 +32,10 @@ public class PostiveIonTrigger : MonoBehaviour
                 //ChargedCloud.UpdateColorCloud(-1);
                 break;
             case "Boundary":
-                //GetComponent<ParticleManager>().minusParticle(gameObject.GetComponent<MovingChargedParticle>());
+                GetComponentInParent<ParticleManager>().minusParticle(this.gameObject.GetComponent<MovingChargedParticle>());
+                Destroy(this.gameObject);
                 //gameObject.SetActive(false);
-                Destroy(gameObject);
+                //Destroy(gameObject);
 
                 break;
             // THIS CASE IS FOR THE PERMEABLE MEMBRANE IN THE PATCH VIEW
