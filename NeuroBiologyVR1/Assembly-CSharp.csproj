@@ -87,9 +87,12 @@
      <Compile Include="Assets\GoogleVR\Scripts\UI\GvrReticle.cs" />
      <Compile Include="Assets\GoogleVR\Scripts\UI\IGvrGazePointer.cs" />
      <Compile Include="Assets\GoogleVR\Scripts\UI\IGvrGazeResponder.cs" />
+     <Compile Include="Assets\Scripts\CableStimBehavior.cs" />
+     <Compile Include="Assets\Scripts\CameraMotion.cs" />
      <Compile Include="Assets\Scripts\ChargedCloud.cs" />
      <Compile Include="Assets\Scripts\ChargedParticle.cs" />
      <Compile Include="Assets\Scripts\DontGoThroughThings.cs" />
+     <Compile Include="Assets\Scripts\FadeTimer.cs" />
      <Compile Include="Assets\Scripts\Graph.cs" />
      <Compile Include="Assets\Scripts\InitialVelocity.cs" />
      <Compile Include="Assets\Scripts\LoadOnClick.cs" />
@@ -104,8 +107,11 @@
      <Compile Include="Assets\Scripts\StimulateCell.cs" />
      <Compile Include="Assets\Scripts\Stimulate_behavior.cs" />
      <Compile Include="Assets\Scripts\TimeScaler.cs" />
+     <Compile Include="Assets\Scripts\Timer.cs" />
+     <Compile Include="Assets\Scripts\TimerBehavior.cs" />
      <Compile Include="Assets\Scripts\Transparency.cs" />
      <Compile Include="Assets\Scripts\VR_ClickMover.cs" />
+     <Compile Include="Assets\Scripts\Velocity.cs" />
      <Compile Include="Assets\Scripts\Zoom_Behavior.cs" />
      <None Include="Assets\GoogleVR\Distortion\GvrDistortion.cginc" />
      <None Include="Assets\GoogleVR\Legacy\Resources\UnlitTexture.shader" />

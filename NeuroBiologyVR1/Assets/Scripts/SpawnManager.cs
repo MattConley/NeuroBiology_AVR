@@ -65,12 +65,12 @@ public class SpawnManager : MonoBehaviour
             }
         }
     }*/
-    void Update()
+    void Spawn()
     {
 
-        if (Input.GetMouseButton(0) && Time.time > nextSpawn)
-        {
-            nextSpawn = Time.time + spawnRate;
+        //if (Input.GetMouseButton(0) && Time.time > nextSpawn)
+       // {
+       //     nextSpawn = Time.time + spawnRate;
             GameObject ionInstance;
             ionInstance = Instantiate(IonSpawn, SpawnPosition.position, SpawnPosition.rotation) as GameObject;
             //ionInstance.AddComponent<Rigidbody>();
@@ -79,7 +79,7 @@ public class SpawnManager : MonoBehaviour
             this.GetComponent<ParticleManager>().addParticle(ionInstance.GetComponent<MovingChargedParticle>());
             //TO KEEP OUTSIDE CHARGE UNAFFECTED BY THE SPAWNING IN OF POSITIVE IONS
             ScoreTracker.UpdateOutsideDistribution(1);
-        }
+       // }
 
     }
     /**/
