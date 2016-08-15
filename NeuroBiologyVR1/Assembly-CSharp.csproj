@@ -87,6 +87,7 @@
      <Compile Include="Assets\GoogleVR\Scripts\UI\GvrReticle.cs" />
      <Compile Include="Assets\GoogleVR\Scripts\UI\IGvrGazePointer.cs" />
      <Compile Include="Assets\GoogleVR\Scripts\UI\IGvrGazeResponder.cs" />
+     <Compile Include="Assets\Scripts\AutomaticLoad.cs" />
      <Compile Include="Assets\Scripts\CableStimBehavior.cs" />
      <Compile Include="Assets\Scripts\CameraMotion.cs" />
      <Compile Include="Assets\Scripts\ChargedCloud.cs" />
