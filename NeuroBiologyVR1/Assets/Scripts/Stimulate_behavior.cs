@@ -6,6 +6,8 @@ public class Stimulate_behavior : MonoBehaviour {
     public ParticleSystem part_pipette;
     private bool isEnabled;
 
+    //private bool isLooking;   For use with alternate strategy
+
 
     // Use this for initialization
     void Start () {
@@ -16,6 +18,23 @@ public class Stimulate_behavior : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    /*Alternate strategy
+    void LateUpdate()
+    {
+        GvrViewer.Instance.UpdateState();
+        if (GvrViewer.Instance.Triggered)
+        {
+
+        }
+    }*/
+
+        /*If we need later
+    void OnTrigger()
+    {
+        ParticleSystem pSystem = (ParticleSystem)Instantiate(part_pipette, part_pipette.transform.position, part_pipette.transform.rotation);
+        pSystem.startDelay = 0;
+    }*/
 
     void OnMouseDown()
     {
