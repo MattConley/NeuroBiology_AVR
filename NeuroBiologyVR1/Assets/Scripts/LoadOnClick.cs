@@ -19,7 +19,7 @@ public class LoadOnClick : MonoBehaviour
     }
     public void LoadScene(int level)
     {
-        StartCoroutine(FadetoWhite(() => Application.LoadLevel(level)));
+        StartCoroutine(FadetoBlack(() => Application.LoadLevel(level)));
         
     }
     private IEnumerator FadetoClear()
@@ -43,7 +43,7 @@ public class LoadOnClick : MonoBehaviour
         overlay.color = Color.clear;
         overlay.gameObject.SetActive(false);
     }
-    private IEnumerator FadetoWhite(Action levelMethod)
+    private IEnumerator FadetoBlack(Action levelMethod)
     {
         overlay.color = Color.clear;
         overlay.gameObject.SetActive(true);

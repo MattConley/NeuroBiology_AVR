@@ -15,7 +15,7 @@ public class TimeScaler : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.O))
         {
-            Time.timeScale = 1.0f + Time.timeScale;
+            Time.timeScale = 1.0f + 50;
 
             Debug.Log(Time.timeScale);
         }

@@ -1,27 +1,41 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class AutomaticLoad : MonoBehaviour {
-    static float currentTime = 0.0000f;
+    public float Timer;
     public int level;
-    // Use this for initialization
+    public GUITexture overlay;
+    public float fadeTime;
+    
     void Awake()
     {
         //BeginTimer
-        StartCoroutine(UpdateTime());
+        LoadScene(level);
     }
-    void Update()
+    public void LoadScene(int level)
     {
-        StartCoroutine(UpdateTime());
+        StartCoroutine(FadetoBlack(() => Application.LoadLevel(level)));
+
     }
-    private IEnumerator UpdateTime()
+
+    private IEnumerator FadetoBlack(Action levelMethod)
     {
-        currentTime += Time.time;
+        yield return new WaitForSeconds(Timer);
+        overlay.color = Color.clear;
+        overlay.gameObject.SetActive(true);
+
+        float rate = 1.0f / fadeTime;
+        float progress = 0.0f;
         
-        if(currentTime == 3.0)
+        while (progress < 1.0f)
         {
-            Application.LoadLevel(level);
+            overlay.color = Color.Lerp(Color.clear, Color.black, progress);
+
+            progress += rate * Time.deltaTime;
             yield return null;
         }
+        overlay.color = Color.black;
+        levelMethod();
     }
 }

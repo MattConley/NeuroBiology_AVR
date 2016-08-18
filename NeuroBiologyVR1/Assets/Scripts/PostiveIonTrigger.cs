@@ -18,6 +18,8 @@ public class PostiveIonTrigger : MonoBehaviour
                // pIEnter.enabled = false;
                 ScoreTracker.UpdateInsideDistribution(-1);
                 ScoreTracker.UpdateOutsideDistribution(1);
+                ClearPlus.Opacity(0.25f, 10);
+                ClearMinus.Opacity(0.25f, 10);
                 break;
         }
     }
@@ -34,6 +36,8 @@ public class PostiveIonTrigger : MonoBehaviour
             case "Boundary":
                 GetComponentInParent<ParticleManager>().minusParticle(this.gameObject.GetComponent<MovingChargedParticle>());
                 Destroy(this.gameObject);
+                ScoreTracker.UpdateOutsideDistribution(-1);
+                ScoreTracker.UpdateInsideDistribution(1);
                 //gameObject.SetActive(false);
                 //Destroy(gameObject);
 
@@ -43,6 +47,8 @@ public class PostiveIonTrigger : MonoBehaviour
                 //pIExit.enabled = false;
                 ScoreTracker.UpdateInsideDistribution(1);
                 ScoreTracker.UpdateOutsideDistribution(-1);
+                ClearPlus.Opacity(-0.25f, -10);
+                ClearMinus.Opacity(-0.25f, -10);
                 break;
         }
     }

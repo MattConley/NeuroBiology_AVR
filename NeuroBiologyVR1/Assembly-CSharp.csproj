@@ -92,6 +92,8 @@
      <Compile Include="Assets\Scripts\CameraMotion.cs" />
      <Compile Include="Assets\Scripts\ChargedCloud.cs" />
      <Compile Include="Assets\Scripts\ChargedParticle.cs" />
+     <Compile Include="Assets\Scripts\ClearMinus.cs" />
+     <Compile Include="Assets\Scripts\ClearPlus.cs" />
      <Compile Include="Assets\Scripts\DontGoThroughThings.cs" />
      <Compile Include="Assets\Scripts\FadeTimer.cs" />
      <Compile Include="Assets\Scripts\Graph.cs" />
