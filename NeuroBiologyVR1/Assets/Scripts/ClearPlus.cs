@@ -25,7 +25,7 @@ public class ClearPlus : MonoBehaviour {
         else if (progress < 0.0f)
         {
             progress = 0.0f;
-            text.fontSize = 100;
+            text.fontSize = 200;
         }
         else
         {

@@ -15,7 +15,7 @@ public class ClearMinus : MonoBehaviour {
     {
         text.color = Color.clear;
         progress += amount;
-        if (progress < 1.0f)
+        if (progress < 1.0f || progress == 1.0f)
         {
             text.color = Color.Lerp(Color.clear, Color.blue, progress);
             text.fontSize += Size;
@@ -23,7 +23,7 @@ public class ClearMinus : MonoBehaviour {
         else if (progress < 0.0f)
         {
             progress = 0.0f;
-            text.fontSize = 100;
+            text.fontSize = 200;
         }
         else
         {

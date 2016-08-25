@@ -18,8 +18,8 @@ public class PostiveIonTrigger : MonoBehaviour
                // pIEnter.enabled = false;
                 ScoreTracker.UpdateInsideDistribution(-1);
                 ScoreTracker.UpdateOutsideDistribution(1);
-                ClearPlus.Opacity(0.25f, 10);
-                ClearMinus.Opacity(0.25f, 10);
+                ClearPlus.Opacity(0.1f, 10);
+                ClearMinus.Opacity(0.1f, 10);
                 break;
         }
     }
@@ -47,8 +47,8 @@ public class PostiveIonTrigger : MonoBehaviour
                 //pIExit.enabled = false;
                 ScoreTracker.UpdateInsideDistribution(1);
                 ScoreTracker.UpdateOutsideDistribution(-1);
-                ClearPlus.Opacity(-0.25f, -10);
-                ClearMinus.Opacity(-0.25f, -10);
+                ClearPlus.Opacity(-0.1f, -10);
+                ClearMinus.Opacity(-0.1f, -10);
                 break;
         }
     }

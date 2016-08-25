@@ -58,7 +58,7 @@ public class VR_ClickMover : MonoBehaviour {
 #if (UNITY_IPHONE)
         if (GvrController.ClickButton)
         {
-            player_body.position = cam_direction * moveLen;
+            player_rbody.position = cam_direction * moveLen;
         }
 #endif
     }
