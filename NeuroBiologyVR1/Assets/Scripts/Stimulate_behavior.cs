@@ -10,14 +10,10 @@ public class Stimulate_behavior : MonoBehaviour {
 
 
     // Use this for initialization
-    void Start () {
+    public void Start () {
         isEnabled = true;
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
     /*Alternate strategy
     void LateUpdate()
@@ -30,13 +26,13 @@ public class Stimulate_behavior : MonoBehaviour {
     }*/
 
      
-    void OnTrigger()
+    public void OnTrigger()
     {
         ParticleSystem pSystem = (ParticleSystem)Instantiate(part_pipette, part_pipette.transform.position, part_pipette.transform.rotation);
         pSystem.startDelay = 0;
     }
 
-    void OnMouseDown()
+    public void OnMouseDown()
     {
         if (isEnabled)
         {
