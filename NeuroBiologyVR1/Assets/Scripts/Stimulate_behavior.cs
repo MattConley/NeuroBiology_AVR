@@ -29,12 +29,12 @@ public class Stimulate_behavior : MonoBehaviour {
         }
     }*/
 
-        /*If we need later
+     
     void OnTrigger()
     {
         ParticleSystem pSystem = (ParticleSystem)Instantiate(part_pipette, part_pipette.transform.position, part_pipette.transform.rotation);
         pSystem.startDelay = 0;
-    }*/
+    }
 
     void OnMouseDown()
     {
