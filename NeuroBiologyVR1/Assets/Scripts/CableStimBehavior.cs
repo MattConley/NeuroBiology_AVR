@@ -12,12 +12,12 @@ public class CableStimBehavior : MonoBehaviour
     private float nextSpawn = 0.0F;
 
     // Use this for initialization
-    void Start()
+    public void Start()
     {
         isEnabled = true;
     }
 
-    void OnMouseDown()
+    public void OnMouseDown()
     {
         if (isEnabled)
         {
@@ -28,7 +28,7 @@ public class CableStimBehavior : MonoBehaviour
             ionInstance.transform.SetParent(GameObject.Find("PositiveIons").transform);
             this.GetComponent<ParticleManager>().addParticle(ionInstance.GetComponent<MovingChargedParticle>());
             //TO KEEP OUTSIDE CHARGE UNAFFECTED BY THE SPAWNING IN OF POSITIVE IONS
-            ScoreTracker.UpdateOutsideDistribution(1);
+           // ScoreTracker.UpdateOutsideDistribution(1);
         }
     }
 }

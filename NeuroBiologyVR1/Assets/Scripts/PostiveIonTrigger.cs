@@ -8,11 +8,11 @@ public class PostiveIonTrigger : MonoBehaviour
         switch (pIEnter.tag)
         {
             //THIS CASE IS FOR THE INSIDE THE MEMBRANE IN THE CABLE VIEW
-            case "InnerMembrane":
-                ScoreTracker.UpdateInsideDistribution(1);
-                ScoreTracker.UpdateOutsideDistribution(-1);
-                //ChargedCloud.UpdateColorCloud(1);
-                break;
+          //case "InnerMembrane":
+                //ScoreTracker.UpdateInsideDistribution(1);
+                //ScoreTracker.UpdateOutsideDistribution(-1);
+                
+                //break;
             // THIS CASE IS FOR THE PERMEABLE MEMBRANE IN THE PATCH VIEW
             case "PermeableTrig":
                // pIEnter.enabled = false;
@@ -28,16 +28,16 @@ public class PostiveIonTrigger : MonoBehaviour
         switch (pIExit.tag)
         {
             //THIS CASE IS FOR THE INSIDE THE MEMBRANE IN THE CABLE VIEW
-            case "InnerMembrane":
-                ScoreTracker.UpdateInsideDistribution(-1);
-                ScoreTracker.UpdateOutsideDistribution(1);
+            //case "InnerMembrane":
+                //ScoreTracker.UpdateInsideDistribution(-1);
+                //ScoreTracker.UpdateOutsideDistribution(1);
                 //ChargedCloud.UpdateColorCloud(-1);
-                break;
+                //break;
             case "Boundary":
                 GetComponentInParent<ParticleManager>().minusParticle(this.gameObject.GetComponent<MovingChargedParticle>());
                 Destroy(this.gameObject);
-                ScoreTracker.UpdateOutsideDistribution(-1);
-                ScoreTracker.UpdateInsideDistribution(1);
+                //ScoreTracker.UpdateOutsideDistribution(-1);
+                //ScoreTracker.UpdateInsideDistribution(1);
                 //gameObject.SetActive(false);
                 //Destroy(gameObject);
 

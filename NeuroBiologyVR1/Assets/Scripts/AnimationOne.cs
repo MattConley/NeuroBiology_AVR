@@ -4,7 +4,9 @@ using System;
 
 public class AnimationOne : MonoBehaviour
 {
-    public int velocity;
+    public int x;
+    public int y;
+    public int z;
     public float timer;
     public float rot;
     public GameObject Player;
@@ -25,7 +27,7 @@ public class AnimationOne : MonoBehaviour
 
         while (rate < timer)
         {
-            Player.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, velocity);
+            Player.GetComponent<Rigidbody>().velocity = new Vector3(x, y, z);
 
             rate += Time.deltaTime;
             yield return null;

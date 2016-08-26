@@ -6,7 +6,6 @@ public class Zoom_Behavior : MonoBehaviour {
     public ParticleSystem part_pipette;
     private bool isEnabled;
     public int scene;
-    public float fadeTime;
 
     // Use this for initialization
     public void Start () {
