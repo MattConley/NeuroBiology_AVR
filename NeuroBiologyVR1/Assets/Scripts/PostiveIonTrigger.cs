@@ -27,7 +27,7 @@ public class PostiveIonTrigger : MonoBehaviour
                 }
                 else
                 {
-                    ScoreTracker.IncreasePercent(-25);
+                    ScoreTracker.IncreasePercent(-25, 0);
                     ScoreTracker.UpdateInsideDistribution(-1);
                     ScoreTracker.UpdateOutsideDistribution(1);
                     ClearPlus.Opacity(0.25f, 10);
@@ -67,7 +67,7 @@ public class PostiveIonTrigger : MonoBehaviour
                 ScoreTracker.UpdateOutsideDistribution(-1);
                 ClearPlus.Opacity(-0.25f, -10);
                 ClearMinus.Opacity(-0.25f, -10);
-                ScoreTracker.IncreasePercent(25);
+                ScoreTracker.IncreasePercent(25, 0);
                 //gameObject.GetComponent<PatchParticleSystem>().IonLeft();
                 break;
         }

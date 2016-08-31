@@ -11,7 +11,7 @@ public class ScoreTracker : MonoBehaviour
     static int currentoutsideDistribution = 0;
     static int currentchargeDifference = currentoutsideDistribution - currentinsideDistribution;
     static int currentPercent = 100;
-
+    static int hundred = 100;
     static Text Prob;
     static Text Perc;
     static int currentProb = 0;
@@ -65,7 +65,7 @@ public class ScoreTracker : MonoBehaviour
     }
     public static int CalcProbability(int percent)
     {
-        int Probability = Random.Range(0, 100);
+        int Probability = Random.Range(0, hundred);
 
         if (Probability < currentPercent && Probability > 0)
         {
@@ -81,8 +81,9 @@ public class ScoreTracker : MonoBehaviour
             return 0;
         }
     }
-    public static void IncreasePercent(int percent)
+    public static void IncreasePercent(int percent, int hun)
     {
+        hundred += hun;
         currentPercent += percent;
         UpdatePerc(currentPercent);
     }
