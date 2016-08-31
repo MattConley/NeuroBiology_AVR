@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PostiveIonTrigger : MonoBehaviour
 {
-    void OnTriggerEnter(Collider pIEnter)
+    public void OnTriggerEnter(Collider pIEnter)
     {
         switch (pIEnter.tag)
         {
@@ -15,15 +15,32 @@ public class PostiveIonTrigger : MonoBehaviour
                 //break;
             // THIS CASE IS FOR THE PERMEABLE MEMBRANE IN THE PATCH VIEW
             case "PermeableTrig":
-               // pIEnter.enabled = false;
-                ScoreTracker.UpdateInsideDistribution(-1);
-                ScoreTracker.UpdateOutsideDistribution(1);
-                ClearPlus.Opacity(0.1f, 10);
-                ClearMinus.Opacity(0.1f, 10);
+                // pIEnter.enabled = false;
+                if(ScoreTracker.CalcProbability(-25) == 1)
+                {
+                    ScoreTracker.UpdateInsideDistribution(-1);
+                    ScoreTracker.UpdateOutsideDistribution(1);
+                    ClearPlus.Opacity(0.25f, 10);
+                    ClearMinus.Opacity(0.25f, 10);
+                    gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 20);
+                    //gameObject.GetComponent<PatchParticleSystem>().IonOut();
+                }
+                else
+                {
+                    ScoreTracker.IncreasePercent(-25);
+                    ScoreTracker.UpdateInsideDistribution(-1);
+                    ScoreTracker.UpdateOutsideDistribution(1);
+                    ClearPlus.Opacity(0.25f, 10);
+                    ClearMinus.Opacity(0.25f, 10);
+                    gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, -20);
+                    //gameObject.GetComponent<PatchParticleSystem>().IonStop();
+                }
+                    
+                                         
                 break;
         }
     }
-    void OnTriggerExit(Collider pIExit)
+    public void OnTriggerExit(Collider pIExit)
     {
         switch (pIExit.tag)
         {
@@ -45,10 +62,13 @@ public class PostiveIonTrigger : MonoBehaviour
             // THIS CASE IS FOR THE PERMEABLE MEMBRANE IN THE PATCH VIEW
             case "PermeableTrig":
                 //pIExit.enabled = false;
+                gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, -40);
                 ScoreTracker.UpdateInsideDistribution(1);
                 ScoreTracker.UpdateOutsideDistribution(-1);
-                ClearPlus.Opacity(-0.1f, -10);
-                ClearMinus.Opacity(-0.1f, -10);
+                ClearPlus.Opacity(-0.25f, -10);
+                ClearMinus.Opacity(-0.25f, -10);
+                ScoreTracker.IncreasePercent(25);
+                //gameObject.GetComponent<PatchParticleSystem>().IonLeft();
                 break;
         }
     }

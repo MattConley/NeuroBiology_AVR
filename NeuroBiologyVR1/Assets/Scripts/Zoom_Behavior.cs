@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 public class Zoom_Behavior : MonoBehaviour {
 
-    public ParticleSystem part_pipette;
+    //public ParticleSystem part_pipette;
     private bool isEnabled;
     public int scene;
 

@@ -10,7 +10,7 @@ public class VR_ClickMover : MonoBehaviour {
     private Rigidbody player_rbody;
     private Vector3 cam_direction;
     private int moveLen = 5;
-    private int moveSpeed = 100;
+    private int moveSpeed = -100;
     private float slowRate = (float)1.5;
 
 	// Use this for initialization

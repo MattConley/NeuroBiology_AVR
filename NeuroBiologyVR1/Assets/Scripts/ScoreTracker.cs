@@ -10,6 +10,12 @@ public class ScoreTracker : MonoBehaviour
     static int currentinsideDistribution = 0;
     static int currentoutsideDistribution = 0;
     static int currentchargeDifference = currentoutsideDistribution - currentinsideDistribution;
+    static int currentPercent = 100;
+
+    static Text Prob;
+    static Text Perc;
+    static int currentProb = 0;
+    static int currentPerc = 100;
     // Use this for initialization
     void Start()
     {
@@ -19,6 +25,12 @@ public class ScoreTracker : MonoBehaviour
         UpdateInsideDistribution(currentinsideDistribution);
         UpdateOutsideDistribution(currentoutsideDistribution);
         UpdateChargeDifference(currentchargeDifference);
+
+
+        Prob = GameObject.FindGameObjectWithTag("Prob").GetComponent<Text>();
+        Perc = GameObject.FindGameObjectWithTag("Perc").GetComponent<Text>();
+        UpdateProb(currentProb);
+        UpdatePerc(currentPerc);
     }
 
     // Update is called once per frame
@@ -38,5 +50,40 @@ public class ScoreTracker : MonoBehaviour
     {
         currentchargeDifference = currentoutsideDistribution - currentinsideDistribution - addedValue;
         chargeDifference.text = "" + currentchargeDifference;
+    }
+    public static void UpdateProb(int addedValue)
+    {
+        currentProb = addedValue;
+        Prob.text = "" + currentProb;
+
+    }
+    public static void UpdatePerc(int addedValue)
+    {
+        currentPerc = addedValue;
+        Perc.text = "" + currentPerc;
+
+    }
+    public static int CalcProbability(int percent)
+    {
+        int Probability = Random.Range(0, 100);
+
+        if (Probability < currentPercent && Probability > 0)
+        {
+            currentPercent += percent;
+            UpdateProb(Probability);
+            UpdatePerc(currentPercent);
+            return 1;
+        }
+        else
+        {
+            UpdateProb(Probability);
+            UpdatePerc(currentPercent);
+            return 0;
+        }
+    }
+    public static void IncreasePercent(int percent)
+    {
+        currentPercent += percent;
+        UpdatePerc(currentPercent);
     }
 }

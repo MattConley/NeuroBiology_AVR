@@ -29,7 +29,7 @@ public class Stimulate_behavior : MonoBehaviour {
     public void OnTrigger()
     {
         ParticleSystem pSystem = (ParticleSystem)Instantiate(part_pipette, part_pipette.transform.position, part_pipette.transform.rotation);
-        pSystem.startDelay = 0;
+        pSystem.Play();
     }
 
     public void OnMouseDown()
@@ -37,7 +37,7 @@ public class Stimulate_behavior : MonoBehaviour {
         if (isEnabled)
         {
             ParticleSystem pSystem = (ParticleSystem)Instantiate(part_pipette, part_pipette.transform.position, part_pipette.transform.rotation);
-            pSystem.startDelay = 0;
+            pSystem.Play();
             //pSystem = 2.0F;
             //isEnabled = false;
         }
