@@ -48,7 +48,7 @@ public class ScoreTracker : MonoBehaviour
     }
     public static void UpdateChargeDifference(int addedValue)
     {
-        currentchargeDifference = currentoutsideDistribution - currentinsideDistribution - addedValue;
+        currentchargeDifference = currentinsideDistribution - currentoutsideDistribution - addedValue;
         chargeDifference.text = "" + currentchargeDifference;
     }
     public static void UpdateProb(int addedValue)
