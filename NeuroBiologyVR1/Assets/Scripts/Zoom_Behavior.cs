@@ -23,7 +23,9 @@ public class Zoom_Behavior : MonoBehaviour {
 
     public void LoadScene(int level)
     {
+        
         Application.LoadLevel(level);
+        ScoreTracker.Reset(0);
     }
 
 }

@@ -87,4 +87,21 @@ public class ScoreTracker : MonoBehaviour
         currentPercent += percent;
         UpdatePerc(currentPercent);
     }
+
+    public static void Reset(int zero)
+    {
+        currentinsideDistribution = 0;
+        UpdateInsideDistribution(currentinsideDistribution);
+        currentchargeDifference = 0;
+        UpdateChargeDifference(currentchargeDifference);
+        currentoutsideDistribution = 0;
+        UpdateOutsideDistribution(currentoutsideDistribution);
+        currentPercent = 100;
+        hundred = 100;
+        currentPerc = 100;
+        currentProb = 0;
+        UpdateProb(currentProb);
+        UpdatePerc(currentPerc);
+
+    }
 }
