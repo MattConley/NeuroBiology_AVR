@@ -10,7 +10,7 @@ public class AnimationOne : MonoBehaviour
     public float timer;
     public float rot;
     public GameObject Player;
-    public GameObject Camera;
+   // public GameObject Camera;
     // Use this for initialization
     void Awake()
     {
@@ -32,7 +32,8 @@ public class AnimationOne : MonoBehaviour
             rate += Time.deltaTime;
             yield return null;
         }
-    Camera.GetComponent<Transform>().forward = new Vector3(0, Camera.GetComponent<Transform>().right.y - 90, 0);
+        Player.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        //Camera.GetComponent<Transform>().forward = new Vector3(0, Camera.GetComponent<Transform>().right.y - 90, 0);
     }
 }   
 

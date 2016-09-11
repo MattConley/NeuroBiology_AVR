@@ -2,12 +2,9 @@
 using System.Collections;
 
 public class FadeTimer : MonoBehaviour {
-    public GUITexture Top;
-    public GUITexture Bottom;
-    public GUIText Title;
-    public GUIText Text1;
-    public GUIText Text2;
-    public GUIText Text3;
+
+    public TextMesh Title;
+    public TextMesh Text1;
     public int Interval;
 
     public float fadeTime;
@@ -19,8 +16,10 @@ public class FadeTimer : MonoBehaviour {
     }
     private IEnumerator FadetoClear()
     {
-        Top.gameObject.SetActive(true);
-        Bottom.color = Color.black;
+        Title.gameObject.SetActive(true);
+        Text1.gameObject.SetActive(true);
+        Title.color = Color.white;
+        Text1.color = Color.white;
 
         float rate = 1.0f / fadeTime;
 
@@ -30,17 +29,15 @@ public class FadeTimer : MonoBehaviour {
 
         while (progress < 1.0f)
         {
-            Top.color = Color.Lerp(Color.black, Color.clear, progress);
-            Bottom.color = Color.Lerp(Color.black, Color.clear, progress);
+            Title.color = Color.Lerp(Color.white, Color.clear, progress);
+            Text1.color = Color.Lerp(Color.white, Color.clear, progress);
 
             progress += rate * Time.deltaTime;
 
             yield return null;
         }
 
-        Top.color = Color.clear;
-        Bottom.color = Color.clear;
-        Top.gameObject.SetActive(false);
-        Bottom.gameObject.SetActive(false);
+        Title.color = Color.clear;
+        Text1.color = Color.clear;
     }
 }
