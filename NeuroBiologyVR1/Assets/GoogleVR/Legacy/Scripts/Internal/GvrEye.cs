@@ -162,7 +162,7 @@ public class GvrEye : MonoBehaviour {
           Time.deltaTime / (controller.stereoAdjustSmoothing + Time.deltaTime) : 1;
       transform.localPosition = Vector3.Lerp(transform.localPosition, eyePos, interpPosition);
     }
-
+    
     // Pass necessary information to any shaders doing distortion correction.
     if (GvrViewer.Instance.DistortionCorrection == GvrViewer.DistortionCorrectionMethod.None) {
       // Correction matrix for use in surface shaders that do vertex warping for distortion.

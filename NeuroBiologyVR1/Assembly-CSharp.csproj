@@ -98,12 +98,14 @@
      <Compile Include="Assets\Scripts\FadeTimer.cs" />
      <Compile Include="Assets\Scripts\Fader\Demo\FaderDemo.cs" />
      <Compile Include="Assets\Scripts\Fader\Fader.cs" />
+     <Compile Include="Assets\Scripts\GateController.cs" />
      <Compile Include="Assets\Scripts\Graph.cs" />
      <Compile Include="Assets\Scripts\InitialVelocity.cs" />
      <Compile Include="Assets\Scripts\LoadOnClick.cs" />
      <Compile Include="Assets\Scripts\MouseLook.cs" />
      <Compile Include="Assets\Scripts\MovingChargedParticle.cs" />
      <Compile Include="Assets\Scripts\NegativeIonTrigger.cs" />
+     <Compile Include="Assets\Scripts\NeuronPartColor.cs" />
      <Compile Include="Assets\Scripts\ParticleManager.cs" />
      <Compile Include="Assets\Scripts\PatchParticleSystem.cs" />
      <Compile Include="Assets\Scripts\PatchSManager.cs" />

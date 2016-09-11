@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/ComputerMode/PassiveMembranePatch.unity
+- path: Assets/Scenes/AxonPotential/Gates.unity
   isLoaded: 1
   isActive: 1

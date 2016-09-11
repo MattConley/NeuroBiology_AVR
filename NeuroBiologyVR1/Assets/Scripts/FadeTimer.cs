@@ -25,7 +25,7 @@ public class FadeTimer : MonoBehaviour {
 
         float progress = 0.0f;
 
-        yield return new WaitForSeconds(Interval);
+        
 
         while (progress < 1.0f)
         {
@@ -36,6 +36,7 @@ public class FadeTimer : MonoBehaviour {
 
             yield return null;
         }
+        yield return new WaitForSeconds(Interval);
 
         Title.color = Color.clear;
         Text1.color = Color.clear;
