@@ -36,10 +36,10 @@ public class NeuronPartColor : MonoBehaviour {
 
             float progress = 0.0f;
 
-            while (progress < .5f)
+            while (progress < 1.0f)
             {
-                NeuronPartA.material.color = Color.Lerp(color, Color.red, progress);
-                NeuronPartB.material.color = Color.Lerp(color, Color.red, progress);
+                NeuronPartA.material.color = Color.Lerp(color, Color.green, progress);
+                NeuronPartB.material.color = Color.Lerp(color, Color.green, progress);
                 progress += rate * Time.deltaTime;
 
                 yield return null;
@@ -51,10 +51,24 @@ public class NeuronPartColor : MonoBehaviour {
 
             yield return new WaitForSeconds(Interval);
 
-            while (progress < .5f)
+            while (progress < 1.0f)
             {
-                NeuronPartA.material.color = Color.Lerp(Color.red, color, progress);
-                NeuronPartB.material.color = Color.Lerp(Color.red, color, progress);
+                NeuronPartA.material.color = Color.Lerp(Color.green, Color.yellow, progress);
+                NeuronPartB.material.color = Color.Lerp(Color.green, Color.yellow, progress);
+                progress += rate * Time.deltaTime;
+                yield return null;
+            }
+
+            rate = 1.0f / fadeTime;
+
+            progress = 0.0f;
+
+            yield return new WaitForSeconds(.01f);
+
+            while (progress < 1.0f)
+            {
+                NeuronPartA.material.color = Color.Lerp(Color.yellow, color, progress);
+                NeuronPartB.material.color = Color.Lerp(Color.yellow, color, progress);
                 progress += rate * Time.deltaTime;
                 NeuronPartA.material.color = color;
                 NeuronPartB.material.color = color;
