@@ -14,6 +14,7 @@ public class PlayMovie : MonoBehaviour {
         audio.clip = movie.audioClip;
         movie.Play();
         audio.Play();
-	}
+        movie.loop = true;
+    }
 
 }
