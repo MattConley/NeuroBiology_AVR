@@ -110,6 +110,7 @@
      <Compile Include="Assets\Scripts\PatchParticleSystem.cs" />
      <Compile Include="Assets\Scripts\PatchSManager.cs" />
      <Compile Include="Assets\Scripts\PatchStimBehavior.cs" />
+     <Compile Include="Assets\Scripts\PlayMovie.cs" />
      <Compile Include="Assets\Scripts\PostiveIonTrigger.cs" />
      <Compile Include="Assets\Scripts\Prompt_Behavior.cs" />
      <Compile Include="Assets\Scripts\Quit.cs" />
