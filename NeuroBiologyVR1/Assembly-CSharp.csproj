@@ -90,6 +90,7 @@
      <Compile Include="Assets\Scripts\AnimationOne.cs" />
      <Compile Include="Assets\Scripts\AutomaticLoad.cs" />
      <Compile Include="Assets\Scripts\CableStimBehavior.cs" />
+     <Compile Include="Assets\Scripts\ChangeColor.cs" />
      <Compile Include="Assets\Scripts\ChargedCloud.cs" />
      <Compile Include="Assets\Scripts\ChargedParticle.cs" />
      <Compile Include="Assets\Scripts\ClearMinus.cs" />
