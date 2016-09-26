@@ -4,13 +4,15 @@ using UnityEngine.Networking;
 using System.Collections.Generic;
 
 public class ChangeColor : MonoBehaviour {
+    /*
     public Renderer band;
-    /*public float rValue;
+    public float rValue;
     public float gValue;
-    public float bValue;*/
+    public float bValue;
+    */
 
     public List<GameObject> Bands;
-    public List<ChangeColor> Lattice;
+    public List<Renderer> FinalBands;
 
     //Cell Paremeters
     float diameter = 2 * 10 ^ -6;   //Diameter
@@ -23,7 +25,12 @@ public class ChangeColor : MonoBehaviour {
 
     void Start()
     {
-        Lattice = new List<ChangeColor>(FindObjectsOfType<ChangeColor>());
+        //Setting Up Array
+        Bands = new List<GameObject>(GameObject.FindGameObjectsWithTag("Bands"));
+        foreach (GameObject band in Bands)
+        {
+            FinalBands.Add(band.GetComponent<Renderer>());
+        }
 
         float ri = 4f * Ri / (Mathf.PI * Mathf.Pow(diameter, 2f));
         float cm = Cm * Mathf.PI * diameter;
@@ -34,7 +41,7 @@ public class ChangeColor : MonoBehaviour {
 
         //Voltage over space
         float dx = 100f * Mathf.Pow(10,-6);
-
+        
         // Voltage Over Time
         x = (0:dx:Mathf.Pow(1000,-6));
         V0 = 2f*Mathf.Exp(-x/lamda);   //Initial Voltage(over space)
@@ -50,24 +57,12 @@ public class ChangeColor : MonoBehaviour {
         x = [fliplr(x(2:end)) x];
         V = [fliplr(V(:, 2:end)) V];
 
-        //RGB Values 101:21
+        //RGB Values
         R = V / max(max(V));
-        
 
-        Color bandColor = new Color(R, 0, 1-R, .75f);
-        band.material.color = bandColor;
-
+ 
+            Color bandColor = new Color(R, 0, 1 - R, .75f);
+            FinalBands[i].material.color = bandColor;
+        }
     }
     
-
-    
-
-
-
-
-
-   
-
-
-
-}
