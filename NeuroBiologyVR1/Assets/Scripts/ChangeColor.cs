@@ -125,8 +125,7 @@ public class ChangeColor : MonoBehaviour {
 
 				}
 
-				timeText.text = Mathf.Round((float)(t[row])*1e6f) + "micros";
-				print(Mathf.Round((float)(t[row])*1e6f) + "micros");
+				timeText.text = Mathf.Round(row*delta*1e6f) + "μs";
 				yield return new WaitForSeconds (.2f);
 			}
 		}
