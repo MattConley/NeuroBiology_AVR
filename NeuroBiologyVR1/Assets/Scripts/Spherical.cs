@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 
 
-public class ChangeColor : MonoBehaviour {
+public class Spherical : MonoBehaviour {
 	/*
     public Renderer band;
     public float rValue;
@@ -36,7 +36,7 @@ public class ChangeColor : MonoBehaviour {
 		//Setting Up Array
 		//Bands = new List<GameObject> (GameObject.FindGameObjectsWithTag ("Bands"));
 		//foreach (GameObject band in Bands) {
-			//FinalBands.Add (band.GetComponent<Renderer> ());
+		//FinalBands.Add (band.GetComponent<Renderer> ());
 		//}
 		float diameter = 2 * Mathf.Pow(10, -6) * multiplier;   //Diameter
 		float ri = 4f * Ri / (Mathf.PI * Mathf.Pow (diameter, 2f));
@@ -93,9 +93,9 @@ public class ChangeColor : MonoBehaviour {
 		for (int i = 0; i < x.Count; i++) {
 			for (int row = 0; row < t.Count; row++) {
 				V [row, i] = (q0 / (2 * cm * lamda * Mathf.Sqrt (Mathf.PI * (float)t [row] / tau))) * Mathf.Exp ((-1.0f * Mathf.Pow ((float)x [i] / lamda, 2)-4.0f * Mathf.Pow ((float)t [row] / tau, 2)) / (4.0f * (float)t [row] / tau));
-					}
+			}
 
-					}
+		}
 
 
 		newMat = new double[t.Count, (x.Count - 1) * 2 + 1];
@@ -135,8 +135,8 @@ public class ChangeColor : MonoBehaviour {
 		{
 			for (int row = 0; row < t.Count; row++) {
 				for (int col = 0; col < (x.Count - 1) * 2 + 1; col++) {
-					Color bandColor = new Color ((float)newMat [row, col], 0, 1f - (float)newMat [row, col], .75f);
-					FinalBands [col].material.color = bandColor;
+					Color bandColor = new Color ((float)newMat [row, 11], 0, 1f - (float)newMat [row, 11], .75f);
+					FinalBands [0].material.color = bandColor;
 
 				}
 
