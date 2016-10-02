@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ public class ChangeColor : MonoBehaviour {
 	float delta = .0001f;
 	ArrayList x = new ArrayList();
 	ArrayList v0 = new ArrayList();
-	ArrayList t;
+	ArrayList t; // Declaration
 
 	//public List<GameObject> Bands;
 	public List<Renderer> FinalBands;
@@ -31,8 +32,15 @@ public class ChangeColor : MonoBehaviour {
 	//Matrix 1:11
 	//101:11
 
+	static Text timeText;
+
+	static float time = 0f;
+
 	void Start()
 	{
+
+		timeText = GameObject.FindGameObjectsWithTag("Timer")[0].GetComponent<Text>();
+
 		//Setting Up Array
 		//Bands = new List<GameObject> (GameObject.FindGameObjectsWithTag ("Bands"));
 		//foreach (GameObject band in Bands) {
@@ -43,42 +51,19 @@ public class ChangeColor : MonoBehaviour {
 		float cm = Cm * Mathf.PI * diameter;
 		float rm = Rm / (Mathf.PI * diameter);
 
+		//print(diameter);
+
 		float lamda = Mathf.Sqrt (rm / ri); // Space Constant
 		float tau = rm * cm; //Time Constant
-		//Voltage over space
-		/*float dx = 100f * Mathf.Pow (10, -6);
-
-		for (float i = 0; i < maxVal; i += delta) {
-			x.Add (i);
-			v0.Add (2.0 * Mathf.Exp (-1f * i / lamda));
-		}
-
-		t = new ArrayList ();
-		delta = .000001f;
-		maxVal = .0001;
-		for (float i = 0; i < maxVal; i += delta) {
-			t.Add (i);
-		}
-
-		double[,] V = new double[t.Count, x.Count];
-
-		for (int i = 0; i < x.Count; i++) {
-			for (int row = 0; row < t.Count; row++) {
-				V [row, i] = (double)v0 [i] * Mathf.Exp (-1.0f * (float)t [row] / tau);
-				if (row == 1){
-					print (V [0, i]);
-				}
-			}
-
-		}
-*///Space and Time Parameters
+		
+//Space and Time Parameters
 		float dx = 100f * Mathf.Pow (10, -6);
 
 		for (float i = 0; i < maxVal; i += delta) {
 			x.Add (i);
 		}
 
-		t = new ArrayList ();
+		t = new ArrayList (); // Instantiating
 		delta = .000001f;
 		maxVal = .000025f;
 		for (float i = delta; i < maxVal; i += delta) {
@@ -140,6 +125,8 @@ public class ChangeColor : MonoBehaviour {
 
 				}
 
+				timeText.text = Mathf.Round((float)(t[row])*1e6f) + "micros";
+				print(Mathf.Round((float)(t[row])*1e6f) + "micros");
 				yield return new WaitForSeconds (.2f);
 			}
 		}

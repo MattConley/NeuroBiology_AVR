@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayMovie : MonoBehaviour {
     public int delay;
     public MovieTexture movie;
-    private AudioSource audio;
+    //private AudioSource audio;
 	// Use this for initialization
 	void Start () {
         StartCoroutine(Pause());
@@ -17,12 +17,12 @@ public class PlayMovie : MonoBehaviour {
     public IEnumerator Pause()
     { 
         GetComponent<RawImage>().texture = movie as MovieTexture;
-        audio = GetComponent<AudioSource>();
-        audio.clip = movie.audioClip;
+        //audio = GetComponent<AudioSource>();
+        //audio.clip = movie.audioClip;
         movie.loop = true;
         yield return new WaitForSeconds(delay);
         movie.Play();
-        audio.Play();
+        //audio.Play();
         movie.loop = true;
     }
 
