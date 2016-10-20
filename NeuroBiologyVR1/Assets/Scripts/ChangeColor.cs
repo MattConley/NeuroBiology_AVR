@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Networking;
@@ -13,9 +13,14 @@ public class ChangeColor : MonoBehaviour {
     public float gValue;
     public float bValue;
     */
+
+    public bool isStimulating;
 	public float multiplier;
-	double maxVal = .001;
-	float delta = .0001f;
+	public int rowi = 0;
+	public int coli = 0;
+	double maxVal = 0.001;
+	//float delta = .0001f;
+	float delta = 0.00005f;
 	ArrayList x = new ArrayList();
 	ArrayList v0 = new ArrayList();
 	ArrayList t; // Declaration
@@ -53,7 +58,7 @@ public class ChangeColor : MonoBehaviour {
 
 		//print(diameter);
 
-		float lamda = Mathf.Sqrt (rm / ri); // Space Constant
+		float lamda = 3f*Mathf.Sqrt (rm / ri)/2f; // Space Constant
 		float tau = rm * cm; //Time Constant
 		
 //Space and Time Parameters
@@ -65,7 +70,7 @@ public class ChangeColor : MonoBehaviour {
 
 		t = new ArrayList (); // Instantiating
 		delta = .000001f;
-		maxVal = .000025f;
+		maxVal = .000010f;
 		for (float i = delta; i < maxVal; i += delta) {
 			t.Add (i);
 		}
@@ -110,23 +115,38 @@ public class ChangeColor : MonoBehaviour {
 				newMat [row, col] = newMat [row, col] / max_Val;
 			}
 		}
-		StartCoroutine (FadetoClear());
+		
 
 	}
+
+	void Update(){
+
+		if(Input.GetMouseButtonDown(0)){
+			//isStimulating = false;
+			isStimulating = true;
+			rowi = 0;
+			coli = 0;
+			StartCoroutine (FadetoClear());
+		}
+	}
+
+
 	private IEnumerator FadetoClear()
 	{
-		yield return new WaitForSeconds (.5f);
-		while (true) 
+
+		
+		//yield return new WaitForSeconds (.5f);
+		while (isStimulating == true) 
 		{
-			for (int row = 0; row < t.Count; row++) {
-				for (int col = 0; col < (x.Count - 1) * 2 + 1; col++) {
-					Color bandColor = new Color ((float)newMat [row, col], 0, 1f - (float)newMat [row, col], .75f);
-					FinalBands [col].material.color = bandColor;
+			for (rowi = 0; rowi < t.Count; rowi++) {
+				for (coli = 0; coli < (x.Count - 1) * 2 + 1; coli++) {
+					Color bandColor = new Color ((float)newMat [rowi, coli], 0, 1f - (float)newMat [rowi, coli], .75f);
+					FinalBands [coli].material.color = bandColor;
 
 				}
-
-				timeText.text = Mathf.Round(row*delta*1e6f) + "μs";
-				yield return new WaitForSeconds (.2f);
+				isStimulating = false;
+				//timeText.text = Mathf.Round(rowi*delta*1e6f) + "μs";
+				yield return new WaitForSeconds (.15f);
 			}
 		}
 	}
