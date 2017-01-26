@@ -24,12 +24,7 @@ public class ChangeColor : MonoBehaviour {
 	public ArrayList x;
 	public ArrayList t;
 	ArrayList v0 = new ArrayList();
-
-
-    public GameObject stim_pipe, rec_pipe;
-    private float delta_z = 5;
-    private float stim_z;
-    public int recordingSite = 10;
+	
 
 	//public List<GameObject> Bands;
 	public List<Renderer> FinalBands;
@@ -128,23 +123,10 @@ public class ChangeColor : MonoBehaviour {
 			}
 		}
 
-
-        //Handling Electrode Locations
-        //TODO: pull recording site
-        recordingSite = 10;
-
-        stim_z = stim_pipe.GetComponent<Transform>().position.z;
-
-        UpdateRecorders();
-
+		
 		//Create New Points for Graph
 		CreatePoints();
 	}
-
-    public void UpdateRecorders()
-    {
-        rec_pipe.GetComponent<Transform>().position = new Vector3(rec_pipe.GetComponent<Transform>().position.x, rec_pipe.GetComponent<Transform>().position.y, stim_z - recordingSite * delta_z);
-    }
 
 	public void CreatePoints () {
 
@@ -214,11 +196,11 @@ public class ChangeColor : MonoBehaviour {
 				}
                
 
-                inc = (float)newMat [rowi,x.Count + recordingSite];
+                inc = (float)newMat [rowi,20];
                 AudioSource audio;
                 audio = GetComponent<AudioSource>();  
                 if(inc>0){
-                	audio.pitch = 1+Mathf.Lerp(0,(float)newMat [0,x.Count + recordingSite], inc);
+                	audio.pitch = 1+Mathf.Lerp(0,(float)newMat [0,20], inc);
 					audio.Play();
 					inc += .5f * Time.deltaTime;
                 }

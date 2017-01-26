@@ -7,15 +7,14 @@ public class WMGTest : MonoBehaviour {
 	public GameObject emptyGraphPrefab;
 	public GameObject CubeObject;
 	public WMG_Axis_Graph graph;
-	public WMG_Series series1;
-	public WMG_Series series2;
-    
+	public WMG_Series series1, series2;
+	public List<Vector2> series1Data;
 
-    private ChangeColor otherScript;
+	private ChangeColor otherScript;
 	private double [,] newMatTwo;
 	private int x=20;
 	private int t=20;
-	private int recordingSite = 10;
+	public float recordingSite;
 	
 
 	void Start () {
@@ -32,7 +31,7 @@ public class WMGTest : MonoBehaviour {
 	
 
 	public void RecieveSliderValue(float valuez){
-		recordingSite = (int)valuez;
+		recordingSite = valuez;
 
 	}
 
@@ -44,22 +43,22 @@ public class WMGTest : MonoBehaviour {
 		//
 		//Refresh();
 		otherScript = CubeObject.GetComponent<ChangeColor>();
-        recordingSite = otherScript.recordingSite;
-        otherScript.UpdateRecorders();
+		
 		newMatTwo = otherScript.newMat;
 		List<Vector2> data = new List<Vector2>();
-        List<Vector2> data2 = new List<Vector2>();
 
-        for (int i=0; i<t-1; i++){
+		for(int i=0; i<t-1; i++){
 
-			data.Add(new Vector2((float)i, (float) newMatTwo[i,20]));
+            data.Add(new Vector2((float)i, (float)newMatTwo[i, 21]));		
 		}
 
         series1.pointValues.SetList(data);
 
+        List<Vector2> data2 = new List<Vector2>();
+
         for (int i=0; i<t-1; i++){
 
-			data2.Add(new Vector2((float)i, (float) newMatTwo[i,x + recordingSite]));		
+			data2.Add(new Vector2((float)i, (float) newMatTwo[i,30]));
 		}
 
         series2.pointValues.SetList(data2);
