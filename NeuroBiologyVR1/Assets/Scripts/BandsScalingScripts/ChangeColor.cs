@@ -17,7 +17,7 @@ public class ChangeColor : MonoBehaviour
     private ParticleSystem.Particle[] points;
     // End of Grapher 1
 
-    public float coroutine_wait = 0.15f;
+    public float coroutine_wait = 0.02f;
 
     public bool isStimulating;
     private bool isDone = false;
@@ -36,6 +36,9 @@ public class ChangeColor : MonoBehaviour
     private float delta_z = 5;
     private float stim_z;
     public int recordingSite = 10;
+
+    private Material bandMat_def;               //used to reset band instead of pulling it each time
+    public Material bandMat_high { get; set; }  //set so it doesn't need to be passed every time
 
     //public List<GameObject> Bands;
     public List<Renderer> FinalBands;
@@ -126,12 +129,9 @@ public class ChangeColor : MonoBehaviour
         {
             for (int col = 0; col < x.Count - 1; col++)
             {
-
                 newMat[row, col + x.Count] = V[row, col + 1];
                 newMat[row, (x.Count - 1) - col] = V[row, col];
-
             }
-
             newMat[row, x.Count - 1] = V[row, 0];
             newMat[row, 0] = V[row, x.Count - 1];
         }
@@ -153,10 +153,11 @@ public class ChangeColor : MonoBehaviour
         //Handling Electrode Locations
         //TODO: pull recording site
         recordingSite = 10;
+        bandMat_def = FinalBands[0].material;
 
         stim_z = stim_pipe.GetComponent<Transform>().position.z;
 
-        UpdateRecorders();
+        //UpdateRecorders();        //Going to be handled in ElectrodeBehaivior
 
         //Create New Points for Graph
         CreatePoints();
@@ -294,5 +295,16 @@ public class ChangeColor : MonoBehaviour
             }
             //}
         }
+    }
+
+    public void HighlightBand(int num_highlight, int num_reset)
+    {
+        ResetBand(num_reset);
+        FinalBands[num_highlight].material = bandMat_high;
+    }
+
+    public void ResetBand(int num_reset)
+    {
+        FinalBands[num_reset].material = bandMat_def;
     }
 }

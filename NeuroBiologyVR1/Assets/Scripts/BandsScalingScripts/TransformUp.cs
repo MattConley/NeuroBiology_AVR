@@ -16,16 +16,14 @@ void Start(){
 
 public void SetTransformUp(float value){
 
-		if(value < scale){
+        if (value == scale)
+        {
+            return;
+        } else if (value < scale){
 			difference = Mathf.Abs(value - scale);
 			scale = value;
 			transform.localPosition = new Vector3(transform.localPosition.x,transform.localPosition.y-difference*increment,transform.localPosition.z);
-		}
-
-		else if(value == scale){
-			scale = value;
-		}
-		else{
+		} else{
 			difference = Mathf.Abs(value - scale);
 			scale = value;
 			transform.localPosition = new Vector3(transform.localPosition.x,transform.localPosition.y+difference*increment,transform.localPosition.z);
