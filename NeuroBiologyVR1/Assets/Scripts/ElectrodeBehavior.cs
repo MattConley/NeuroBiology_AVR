@@ -5,6 +5,7 @@ using System.Collections;
 public class ElectrodeBehavior : MonoBehaviour {
 
     public GameObject cube_manager;
+    public GameObject empty_man;
     public Material high_mat;
     public GameObject player_obj;
     public Camera player_cam;
@@ -15,6 +16,7 @@ public class ElectrodeBehavior : MonoBehaviour {
 
     private ChangeColor otherScript;
     private WMGTest graphScript;
+    private ScriptManager myManager;
     public int last_band { get; set; }
     private int stim_pos = 20;      //position of stimulating electrode (zero indexed)
 
@@ -38,7 +40,8 @@ public class ElectrodeBehavior : MonoBehaviour {
         x_pos = tempVec.x;
         def_mat = this.GetComponent<MeshRenderer>().materials[0];
         otherScript = cube_manager.GetComponent<ChangeColor>();
-        otherScript.bandMat_high = high_mat;
+        myManager = empty_man.GetComponent<ScriptManager>();
+        //otherScript.bandMat_high = high_mat;
 
         graphScript = gui_canvas.GetComponent<WMGTest>();
     }
@@ -111,12 +114,13 @@ public class ElectrodeBehavior : MonoBehaviour {
         }
         else
         {
+            myManager.UpdateElectrode(last_band);
             //update transform position
-            this.GetComponent<Transform>().position = new Vector3(x_pos, y_pos, -1f * (float)(last_band * 5 + 2.5));
+            this.GetComponent<Transform>().position = new Vector3(x_pos, y_pos, -1f * (float)((last_band-1) * 5 + 2.5));
             //reset target_band's material
-            otherScript.ResetBand(last_band);
+            //otherScript.ResetBand(last_band);
             //enable graph series 2
-            graphScript.set_recEnabled(true);
+            //graphScript.set_recEnabled(true);
         }
     }
 }

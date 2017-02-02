@@ -6,6 +6,7 @@ public class WMGTest : MonoBehaviour
 {
 
     public GameObject emptyGraphPrefab;
+    public GameObject graphGO;
     public GameObject CubeObject;
     public GameObject RecElectrode;
     public WMG_Axis_Graph graph;
@@ -21,6 +22,9 @@ public class WMGTest : MonoBehaviour
     private int t = 20;
     private int recordingSite = 10;
 
+    public int band_width = 20;     //set by manager
+    public int num_points = 200;
+
     private float coroutine_time;
     private float fupdate_time = 0.02f;
     private float update_count = 0f;
@@ -29,11 +33,13 @@ public class WMGTest : MonoBehaviour
 
     private bool rec_enabled = true;
 
+    public long curcount = 0; 
 
     void Start()
     {
-        GameObject graphGO = GameObject.Instantiate(emptyGraphPrefab);
-        graphGO.transform.SetParent(this.transform, false);
+        //graphGO = GameObject.Instantiate(emptyGraphPrefab);
+        //graphGO.transform.SetParent(this.transform, false);
+
         graph = graphGO.GetComponent<WMG_Axis_Graph>();
         series1 = graph.addSeries();
         series2 = graph.addSeries();
@@ -44,7 +50,8 @@ public class WMGTest : MonoBehaviour
         graph.xAxis.AxisMaxValue = 0;
         graph.autoUpdateOrigin = false;
         graph.theOrigin = new Vector2(0f, 0f);
-        graph.xAxis.AxisTitleString = "Time Passed (μs)";
+        graph.xAxis.AxisTitleString = "Time";
+        graph.xAxis.hideLabels = true;
         graph.autoShrinkAtPercent = 0f;
         graph.autoAnimationsEnabled = false;
 
@@ -57,6 +64,7 @@ public class WMGTest : MonoBehaviour
         data2 = new List<Vector2>();
         dataStore = new List<Vector2>();
 
+        //series1.pointValues
         //graph.xAxis.AxisMaxValue = x;
 
     }
@@ -75,10 +83,15 @@ public class WMGTest : MonoBehaviour
         //data2 = new List<Vector2>();
     }
 
-    // Use this for initialization
-    void Update()
+    public void ToggleGraph()
     {
+        graphGO.SetActive(!graphGO.activeSelf);
+    }
 
+    // Use this for initialization
+    void nUpdate()
+    {
+        curcount++;
         if (update_count >= coroutine_time)
         {
             update_count = update_count % coroutine_time;
@@ -133,30 +146,45 @@ public class WMGTest : MonoBehaviour
             else
                 series2.pointValues.SetList(new List<Vector2>());
             
-            /*
-            for (int i = 0; i < t - 1; i++)
-            {
-
-                //data.Add(new Vector2((float)i, (float)newMatTwo[i, 20]));
-                data.Add(new Vector2((float)i, (float)newMatTwo[i, 20]));
-            }
             
-            series1.pointValues.SetList(data);
-
-            for (int i = 0; i < t - 1; i++)
-            {
-
-                data2.Add(new Vector2((float)i, (float)newMatTwo[i, x + recordingSite]));
-            }
-
-            series2.pointValues.SetList(data2);
-            */
-
         }
         else
         {
             update_count += fupdate_time;
         }
+    }
+
+    public void AddPoint(double[] volt, float timestep)
+    {
+        for(int i = 0; i < data.Count; i++)
+        {
+            Vector2 prevValue = data[i];
+            data.Insert(i, new Vector2(prevValue.x + timestep, prevValue.y));
+            data.RemoveAt(i + 1);
+
+            prevValue = data2[i];
+            data2.Insert(i, new Vector2(prevValue.x + timestep, prevValue.y));
+            data2.RemoveAt(i + 1);
+        }
+
+        data.Insert(0, new Vector2(0f, (float)volt[band_width]));
+        if (rec_enabled)
+            data2.Insert(0, new Vector2(0f, (float)volt[recordingSite]));
+        else
+            data2.Insert(0, new Vector2(0f, 0f));
+
+        if (data.Count >= num_points)
+        {
+            data.RemoveAt(num_points - 1);
+            data2.RemoveAt(num_points - 1);
+        }
+
+        series1.pointValues.SetList(data);
+        if (rec_enabled)
+            series2.pointValues.SetList(data2);
+        else
+            series2.pointValues.SetList(new List<Vector2>());
+
     }
 
 }

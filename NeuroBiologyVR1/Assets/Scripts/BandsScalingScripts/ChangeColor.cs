@@ -31,11 +31,16 @@ public class ChangeColor : MonoBehaviour
     public ArrayList t;
     ArrayList v0 = new ArrayList();
 
-
+    public GameObject empty_man;
+    private ScriptManager myManager;
     public GameObject stim_pipe, rec_pipe;
     private float delta_z = 5;
     private float stim_z;
     public int recordingSite = 10;
+
+    public double time_scale = 0.00005;     //should be set by ScriptManager
+    public double len_scale=0.00005;        //should be set by ScriptManager
+    public int band_width=20;               //should be set by ScriptManager
 
     private Material bandMat_def;               //used to reset band instead of pulling it each time
     public Material bandMat_high { get; set; }  //set so it doesn't need to be passed every time
@@ -62,9 +67,13 @@ public class ChangeColor : MonoBehaviour
     private float objScale = 1;
 
     public static float inc = 0.0f;
+
+    float q0, diameter, ri, cm, rm, lambda, tau;    //Voltage Calculation 
+    double max_Val;                                  //      Variables
+
     void Start()
     {
-
+        myManager = empty_man.GetComponent<ScriptManager>();
         timeText = GameObject.FindGameObjectsWithTag("Timer")[0].GetComponent<Text>();
 
         //Setting Up Array
@@ -74,7 +83,7 @@ public class ChangeColor : MonoBehaviour
         //}
 
         //Space and Time Parameters
-        float dx = 100f * Mathf.Pow(10, -6);
+        //float dx = 100f * Mathf.Pow(10, -6);
 
         x = new ArrayList();
         float delta = 0.00005f;
@@ -93,20 +102,20 @@ public class ChangeColor : MonoBehaviour
             t.Add(i);
         }
 
-        float q0 = 1f;
-        float diameter = Mathf.Pow(10, -6);   //Diameter
-        float ri = 4f * Ri / (Mathf.PI * Mathf.Pow(diameter, 2f));
-        float cm = Cm * Mathf.PI * diameter;
-        float rm = Rm / (Mathf.PI * diameter);
-        float lamda = 3f * Mathf.Sqrt(rm / ri) / 2f; // Space Constant
-        float tau = rm * cm; //Time Constant
-        double max_Val = (q0 / (2 * cm * lamda * Mathf.Sqrt(Mathf.PI * (float)t[0] / tau))) * Mathf.Exp((-1.0f * Mathf.Pow((float)x[0] / lamda, 2) - 4.0f * Mathf.Pow((float)t[0] / tau, 2)) / (4.0f * (float)t[0] / tau)); ;
+        q0 = 1f;
+        diameter = Mathf.Pow(10, -6);   //Diameter
+        ri = 4f * Ri / (Mathf.PI * Mathf.Pow(diameter, 2f));
+        cm = Cm * Mathf.PI * diameter;
+        rm = Rm / (Mathf.PI * diameter);
+        lambda = 3f * Mathf.Sqrt(rm / ri) / 2f; // Space Constant
+        tau = rm * cm; //Time Constant
+        max_Val = (q0 / (2 * cm * lambda * Mathf.Sqrt(Mathf.PI * (float)t[0] / tau))) * Mathf.Exp((-1.0f * Mathf.Pow((float)x[0] / lambda, 2) - 4.0f * Mathf.Pow((float)t[0] / tau, 2)) / (4.0f * (float)t[0] / tau)); 
 
         diameter = multiplier * Mathf.Pow(10, -6);   //Diameter
         ri = 4f * Ri / (Mathf.PI * Mathf.Pow(diameter, 2f));
         cm = Cm * Mathf.PI * diameter;
         rm = Rm / (Mathf.PI * diameter);
-        lamda = 3f * Mathf.Sqrt(rm / ri) / 2f; // Space Constant
+        lambda = 3f * Mathf.Sqrt(rm / ri) / 2f; // Space Constant
         tau = rm * cm; //Time Constant
 
         V = new double[t.Count, x.Count];
@@ -115,7 +124,7 @@ public class ChangeColor : MonoBehaviour
         {
             for (int row = 0; row < t.Count; row++)
             {
-                V[row, i] = (q0 / (2 * cm * lamda * Mathf.Sqrt(Mathf.PI * (float)t[row] / tau))) * Mathf.Exp((-1.0f * Mathf.Pow((float)x[i] / lamda, 2) - 4.0f * Mathf.Pow((float)t[row] / tau, 2)) / (4.0f * (float)t[row] / tau));
+                V[row, i] = (q0 / (2 * cm * lambda * Mathf.Sqrt(Mathf.PI * (float)t[row] / tau))) * Mathf.Exp((-1.0f * Mathf.Pow((float)x[i] / lambda, 2) - 4.0f * Mathf.Pow((float)t[row] / tau, 2)) / (4.0f * (float)t[row] / tau));
             }
 
         }
@@ -163,9 +172,22 @@ public class ChangeColor : MonoBehaviour
         CreatePoints();
     }
 
-    public void UpdateVoltage()
-    {
+    //public void UpdateDiameter(double )
 
+    public double[] UpdateVoltage(double timeVal)
+    {
+        double[] newVoltage = new double[band_width];
+        for (int bandNum = 0; bandNum < band_width; bandNum++) {
+            newVoltage[bandNum] = (q0 / (2 * cm * lambda * Mathf.Sqrt(Mathf.PI * (float)timeVal / tau))) * Mathf.Exp((-1.0f * Mathf.Pow((float)((bandNum+1)*len_scale) / lambda, 2) - 4.0f * Mathf.Pow((float)timeVal / tau, 2)) / (4.0f * (float)timeVal / tau));
+        }
+        double[] v_normalized = new double[band_width * 2 + 1];
+        for(int seg = 0; seg < band_width; seg++)
+        {
+            v_normalized[seg + 1 + band_width] = newVoltage[seg]/max_Val;
+            v_normalized[band_width - (seg+1)] = newVoltage[seg]/max_Val;
+        }
+        v_normalized[band_width] = newVoltage[0] / max_Val;
+        return v_normalized;
     }
 
     public void UpdateRecorders()
@@ -210,7 +232,7 @@ public class ChangeColor : MonoBehaviour
 
     public void OnTrigger()
     {
-
+        myManager.Stimulate();
         if (isDone)
         {
             StopCoroutine(FadetoClear());
