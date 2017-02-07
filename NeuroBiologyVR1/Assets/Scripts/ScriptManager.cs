@@ -20,10 +20,10 @@ public class ScriptManager : MonoBehaviour {
     private float last_update;
     private double since_stimulation = 0.01;
 
-    private double time_scale = 0.00005;         //seconds * time_scale = simulated seconds
-    private double time_converter = 25;          //seconds * time_converter = simulated microseconds
+    private double time_scale = 0.00002;         //seconds * time_scale = simulated seconds
+    private double time_converter = 20;          //seconds * time_converter = simulated microseconds
 
-    private int num_points = 50;
+    private int num_points = 55;
 
     public int e_pos = 30;
 
@@ -51,8 +51,8 @@ public class ScriptManager : MonoBehaviour {
         if (since_stimulation == 0.0)     //continuous stimulation framework
         {
             last_update = Time.deltaTime;
-            double[] voltage_data = color_script.UpdateVoltage(0.000001);
-            graph_script.AddPoint(voltage_data, (float)(last_update * time_converter));
+            //double[] voltage_data = color_script.UpdateVoltage(0.000001);
+            //graph_script.AddPoint(voltage_data, (float)(last_update * time_converter));
             since_stimulation += Time.deltaTime;
         }
         else
