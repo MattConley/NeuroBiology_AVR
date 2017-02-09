@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class ScriptManager : MonoBehaviour {
 
     public GameObject
         gui_canvas, rec_electrode, color_cube, player_obj, player_cam;
+    public GameObject
+        pause_label;
 
     public WMGTest graph_script;
     public ElectrodeBehavior rec_script;
@@ -13,7 +16,10 @@ public class ScriptManager : MonoBehaviour {
     public Material bandMat_high;
     
     public bool graph_enabled = false;
+    public bool rec_enabled = false;
     private bool isPaused = false;
+
+    private bool spacePausing = false;
 
     public int band_width = 20;
 
@@ -24,8 +30,12 @@ public class ScriptManager : MonoBehaviour {
     private double time_converter = 20;          //seconds * time_converter = simulated microseconds
 
     private int num_points = 55;
+    private int pointBuffer = 4;       //pointBuffer * num_points = number of points stored in buffer
+    private bool analysis_mode = false;
 
     public int e_pos = 30;
+
+    private Vector3 vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);    //position Vector at x=30;
 
     // Use this for initialization
     void Start () {
@@ -40,15 +50,20 @@ public class ScriptManager : MonoBehaviour {
         //init graph
         graph_script.num_points = num_points;
         graph_script.band_width = band_width;
-        
+        graph_script.pointBuffer = pointBuffer;
+
+        //graph_script.SetGraph(graph_enabled);
+        //graph_script.set_recEnabled(rec_enabled);
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (isPaused)
+        if (Input.GetKeyDown(KeyCode.Space))
+            TogglePause();
+        else if (isPaused)
             return;
-        if (since_stimulation == 0.0)     //continuous stimulation framework
+        if (since_stimulation == 0.01)     //continuous stimulation framework
         {
             last_update = Time.deltaTime;
             //double[] voltage_data = color_script.UpdateVoltage(0.000001);
@@ -77,7 +92,7 @@ public class ScriptManager : MonoBehaviour {
         graph_script.ToggleGraph();
     }
 
-    public bool TogglePause()       //returns whether the time is NOW paused
+    public bool TogglePause()       //returns whether the time is NOW paused -> after calling TogglePause
     {
         color_cube.SetActive(isPaused);
         if (!isPaused)
@@ -86,6 +101,7 @@ public class ScriptManager : MonoBehaviour {
             graph_script.enabled = false;
             color_script.enabled = false;
             rec_script.enabled = false;
+            pause_label.GetComponent<Text>().text = "Resume";
         }
         else
         {
@@ -93,6 +109,7 @@ public class ScriptManager : MonoBehaviour {
             graph_script.enabled = true;
             color_script.enabled = true;
             rec_script.enabled = true;
+            pause_label.GetComponent<Text>().text = "Pause";
         }
         isPaused = !isPaused;
         return isPaused;
@@ -100,7 +117,7 @@ public class ScriptManager : MonoBehaviour {
 
     public void Stimulate()
     {
-        since_stimulation = 0;
+        since_stimulation = 0.01;
     }
 
     public void UpdateElectrode(int newEPos)
@@ -109,5 +126,22 @@ public class ScriptManager : MonoBehaviour {
         color_script.ResetBand(e_pos);
         graph_script.RecieveSliderValue(e_pos);
         graph_script.set_recEnabled(true);
+    }
+
+    public void SetDiameter(float value)
+    {
+        color_script.SetVariable(value);
+
+    }
+
+    public void ToggleMode()
+    {
+        analysis_mode = !analysis_mode;
+        //graph_script.pointBuffer = pointBuffer;
+        graph_script.ToggleMode();
+        if ((analysis_mode && !isPaused) || (!analysis_mode && isPaused))
+        {
+            TogglePause();
+        }
     }
 }

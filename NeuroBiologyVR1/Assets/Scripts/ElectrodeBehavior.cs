@@ -25,7 +25,11 @@ public class ElectrodeBehavior : MonoBehaviour {
     private float scale = 1;        //Used to update
     private float increment = 6;    //Base y_pos
 
-    private float orig_ypos, y_pos, x_pos;
+    private float orig_ypos, y_pos, click_ypos, x_pos;
+    private float tip_ypos, tip_zpos;
+
+    private Vector3 pointer_pos;
+    private Vector3 vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);    //position Vector at x=30;
 
     //public GameObject
 
@@ -34,9 +38,10 @@ public class ElectrodeBehavior : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         last_band = 30;
-        Vector3 tempVec = this.GetComponent<Transform>().position;
+        Vector3 tempVec = vec_oldPos;//this.GetComponent<Transform>().position;
         orig_ypos = tempVec.y;
         y_pos = tempVec.y;
+        click_ypos = 0;
         x_pos = tempVec.x;
         def_mat = this.GetComponent<MeshRenderer>().materials[0];
         otherScript = cube_manager.GetComponent<ChangeColor>();
@@ -55,13 +60,17 @@ public class ElectrodeBehavior : MonoBehaviour {
         }
         else if(new_band < 0 )
         {
-            otherScript.HighlightBand(0, last_band);
-            last_band = 0;
+            otherScript.ResetBand(last_band);
+            last_band = -1;
+            //otherScript.HighlightBand(0, last_band);
+            //last_band = 0;
         }
         else if(new_band > max_band)
         {
-            otherScript.HighlightBand(max_band, last_band);
-            last_band = max_band;
+            otherScript.ResetBand(last_band);
+            last_band = -1;
+            //otherScript.HighlightBand(max_band, last_band);
+            //last_band = max_band;
         }
         else
         {
@@ -81,14 +90,22 @@ public class ElectrodeBehavior : MonoBehaviour {
         if (isDragging)
         {
             float cam_z_depth = Mathf.Abs(player_obj.GetComponent<Transform>().position.x - x_pos);
-            Vector3 pointer_pos = player_cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, cam_z_depth));
+            pointer_pos = player_cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, cam_z_depth));
             //float y_intersect = 0f, z_intersect = 0f;
             //calc camera-pointer ray intersection with cable x-y plane
 
             //set electrode position based on mouse/pointer
-            this.GetComponent<Transform>().position = new Vector3(x_pos, pointer_pos.y, pointer_pos.z);
+            this.GetComponent<Transform>().position = new Vector3(x_pos, pointer_pos.y + click_ypos, pointer_pos.z);
 
-            updateBand(pointer_pos.z);
+            if (this.GetComponent<Transform>().position.y - 120 <= 0)
+            {
+                updateBand(pointer_pos.z);
+            }
+            else
+            {
+                otherScript.ResetBand(last_band);
+                last_band = -1;
+            }
         }
     }
 
@@ -111,16 +128,21 @@ public class ElectrodeBehavior : MonoBehaviour {
         {
             //disable graph series 2
             graphScript.set_recEnabled(false);
+            pointer_pos = player_cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Mathf.Abs(player_obj.GetComponent<Transform>().position.x - x_pos)));
+            click_ypos = this.GetComponent<Transform>().position.y - pointer_pos.y;
         }
         else
         {
-            myManager.UpdateElectrode(last_band);
-            //update transform position
-            this.GetComponent<Transform>().position = new Vector3(x_pos, y_pos, -1f * (float)((last_band-1) * 5 + 2.5));
-            //reset target_band's material
-            //otherScript.ResetBand(last_band);
-            //enable graph series 2
-            //graphScript.set_recEnabled(true);
+            if (last_band >= 0)
+            {
+                myManager.UpdateElectrode(last_band);
+                //update transform position
+                this.GetComponent<Transform>().position = new Vector3(x_pos, y_pos, -1f * (float)((last_band - 1) * 5 + 2.5));
+                //reset target_band's material
+                //otherScript.ResetBand(last_band);
+                //enable graph series 2
+                //graphScript.set_recEnabled(true);
+            }
         }
     }
 }

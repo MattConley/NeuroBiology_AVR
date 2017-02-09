@@ -25,13 +25,19 @@ public class LabelButtonBehavior : MonoBehaviour {
     public void PauseTime()
     {
         bool isPaused = myManager.TogglePause();
+        /*//Handled in ScriptManager
         if (isPaused)
         {
-            this.GetComponentInChildren<Text>().text = "Unpause";
+            this.GetComponentInChildren<Text>().text = "Resume";
         }
         else
         {
             this.GetComponentInChildren<Text>().text = "Pause";
-        }
+        }*/
+    }
+
+    public void ToggleMode()
+    {
+        myManager.ToggleMode();
     }
 }

@@ -172,7 +172,15 @@ public class ChangeColor : MonoBehaviour
         CreatePoints();
     }
 
-    //public void UpdateDiameter(double )
+    public void UpdateDiameter()
+    {
+        diameter = multiplier * Mathf.Pow(10, -6);   //Diameter
+        ri = 4f * Ri / (Mathf.PI * Mathf.Pow(diameter, 2f));
+        cm = Cm * Mathf.PI * diameter;
+        rm = Rm / (Mathf.PI * diameter);
+        lambda = 3f * Mathf.Sqrt(rm / ri) / 2f; // Space Constant
+        tau = rm * cm; //Time Constant
+    }
 
     public double[] UpdateVoltage(double timeVal)
     {
@@ -250,7 +258,8 @@ public class ChangeColor : MonoBehaviour
     {
 
         multiplier = value;
-        Start();
+        UpdateDiameter();
+        //Start();
 
     }
 
@@ -321,12 +330,16 @@ public class ChangeColor : MonoBehaviour
 
     public void HighlightBand(int num_highlight, int num_reset)
     {
+        if (num_highlight < 0)
+            return;
         ResetBand(num_reset);
         FinalBands[num_highlight].material = bandMat_high;
     }
 
     public void ResetBand(int num_reset)
     {
+        if(num_reset < 0)
+            return;
         FinalBands[num_reset].material = bandMat_def;
     }
 }

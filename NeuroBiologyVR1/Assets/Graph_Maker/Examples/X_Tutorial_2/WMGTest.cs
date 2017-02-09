@@ -24,14 +24,20 @@ public class WMGTest : MonoBehaviour
 
     public int band_width = 20;     //set by manager
     public int num_points = 200;
+    public int pointBuffer;
 
     private float coroutine_time;
     private float fupdate_time = 0.02f;
     private float update_count = 0f;
 
-    public List<Vector2> data, data2, dataStore;
+    public List<Vector2> data, data2, dataStore, data2Store;
 
-    private bool rec_enabled = true;
+    private bool rec_enabled = false;
+    private bool graph_enabled = false;
+    private bool analysis_mode = false;
+
+    private Vector3 cur_pos;
+    private Vector3 alt_pos = new Vector3(0, -190, -100);
 
     public long curcount = 0; 
 
@@ -39,12 +45,15 @@ public class WMGTest : MonoBehaviour
     {
         //graphGO = GameObject.Instantiate(emptyGraphPrefab);
         //graphGO.transform.SetParent(this.transform, false);
+        //graphGO.SetActive(graph_enabled);
 
         graph = graphGO.GetComponent<WMG_Axis_Graph>();
         series1 = graph.addSeries();
         series2 = graph.addSeries();
         series2.pointColor = new Color(0, 230, 0);
         series2.lineColor = new Color(0, 230, 0);
+
+        series2.enabled = rec_enabled;
 
         graph.xAxis.AxisMinValue = 20;
         graph.xAxis.AxisMaxValue = 0;
@@ -63,12 +72,27 @@ public class WMGTest : MonoBehaviour
         data = new List<Vector2>();
         data2 = new List<Vector2>();
         dataStore = new List<Vector2>();
+        data2Store = new List<Vector2>();
+
+        cur_pos = graphGO.GetComponent<Transform>().localPosition;
+
+        //series1.enabled = graph_enabled;
+        //graphGO.SetActive(graph_enabled);
+        //ToggleGraph();
+
+        StartCoroutine(DisableGraph());
 
         //series1.pointValues
         //graph.xAxis.AxisMaxValue = x;
 
     }
 
+    public IEnumerator DisableGraph()
+    {
+        yield return new WaitForSeconds(0.15f);
+        //graphGO.SetActive(false);
+        ToggleGraph();
+    }
 
     public void RecieveSliderValue(float valuez)
     {
@@ -85,7 +109,42 @@ public class WMGTest : MonoBehaviour
 
     public void ToggleGraph()
     {
-        graphGO.SetActive(!graphGO.activeSelf);
+        graph_enabled = !graphGO.activeSelf;
+        series1.enabled = graph_enabled;
+        series2.enabled = graph_enabled;
+        graphGO.SetActive(graph_enabled);
+    }
+
+    public void SetGraph(bool graph_enable)
+    {
+        series1.enabled = graph_enabled;
+        series2.enabled = graph_enabled;
+        graphGO.SetActive(graph_enable);
+    }
+
+    public void ToggleMode()
+    {
+        analysis_mode = !analysis_mode;
+        Vector2 g_scale = graphGO.GetComponent<RectTransform>().sizeDelta;
+        if (analysis_mode)
+        {
+            graphGO.GetComponent<Transform>().localPosition = alt_pos;
+            graphGO.GetComponent<RectTransform>().sizeDelta = new Vector2(g_scale.x * pointBuffer, g_scale.y);
+            graph.xAxis.AxisMinValue = graph.xAxis.AxisMinValue * pointBuffer;
+            series1.pointValues.SetList(dataStore);
+            if (rec_enabled)
+                series2.pointValues.SetList(data2Store);
+        }
+        else
+        {
+            graphGO.GetComponent<Transform>().localPosition = cur_pos;
+            graphGO.GetComponent<RectTransform>().sizeDelta = new Vector2(g_scale.x / pointBuffer, g_scale.y);
+            graph.xAxis.AxisMinValue = graph.xAxis.AxisMinValue / pointBuffer;
+            series1.pointValues.SetList(data);
+            if(rec_enabled)
+                series2.pointValues.SetList(data2);
+        }
+        
     }
 
     // Use this for initialization
@@ -167,11 +226,30 @@ public class WMGTest : MonoBehaviour
             data2.RemoveAt(i + 1);
         }
 
+        for (int i = 0; i < dataStore.Count; i++)
+        {
+            Vector2 prevValue = dataStore[i];
+            dataStore.Insert(i, new Vector2(prevValue.x + timestep, prevValue.y));
+            dataStore.RemoveAt(i + 1);
+
+            prevValue = data2Store[i];
+            data2Store.Insert(i, new Vector2(prevValue.x + timestep, prevValue.y));
+            data2Store.RemoveAt(i + 1);
+
+        }
+
         data.Insert(0, new Vector2(0f, (float)volt[band_width]));
+        dataStore.Insert(0, new Vector2(0f, (float)volt[band_width]));
         if (rec_enabled)
+        {
             data2.Insert(0, new Vector2(0f, (float)volt[recordingSite]));
+            data2Store.Insert(0, new Vector2(0f, (float)volt[recordingSite]));
+        }
         else
+        {
             data2.Insert(0, new Vector2(0f, 0f));
+            data2Store.Insert(0, new Vector2(0f, 0f));
+        }
 
         if (data.Count >= num_points)
         {
@@ -179,11 +257,28 @@ public class WMGTest : MonoBehaviour
             data2.RemoveAt(num_points - 1);
         }
 
-        series1.pointValues.SetList(data);
-        if (rec_enabled)
-            series2.pointValues.SetList(data2);
+        if (dataStore.Count >= num_points * pointBuffer)
+        {
+            dataStore.RemoveAt(num_points*pointBuffer - 1);
+            data2Store.RemoveAt(num_points * pointBuffer - 1);
+        }
+
+        if (analysis_mode)
+        {
+            series1.pointValues.SetList(dataStore);
+            if (rec_enabled)
+                series2.pointValues.SetList(data2Store);
+            else
+                series2.pointValues.SetList(new List<Vector2>());
+        }
         else
-            series2.pointValues.SetList(new List<Vector2>());
+        {
+            series1.pointValues.SetList(data);
+            if (rec_enabled)
+                series2.pointValues.SetList(data2);
+            else
+                series2.pointValues.SetList(new List<Vector2>());
+        }
 
     }
 
