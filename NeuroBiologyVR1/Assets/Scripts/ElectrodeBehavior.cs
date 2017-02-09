@@ -127,7 +127,8 @@ public class ElectrodeBehavior : MonoBehaviour {
         if (isBegun)
         {
             //disable graph series 2
-            graphScript.set_recEnabled(false);
+            //graphScript.set_recEnabled(false);
+            myManager.DisableElectrode();
             pointer_pos = player_cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Mathf.Abs(player_obj.GetComponent<Transform>().position.x - x_pos)));
             click_ypos = this.GetComponent<Transform>().position.y - pointer_pos.y;
         }
@@ -142,6 +143,10 @@ public class ElectrodeBehavior : MonoBehaviour {
                 //otherScript.ResetBand(last_band);
                 //enable graph series 2
                 //graphScript.set_recEnabled(true);
+            }
+            else
+            {
+                myManager.DisableElectrode();
             }
         }
     }

@@ -41,6 +41,7 @@ public class ChangeColor : MonoBehaviour
     public double time_scale = 0.00005;     //should be set by ScriptManager
     public double len_scale=0.00005;        //should be set by ScriptManager
     public int band_width=20;               //should be set by ScriptManager
+    private int high_band_index;
 
     private Material bandMat_def;               //used to reset band instead of pulling it each time
     public Material bandMat_high { get; set; }  //set so it doesn't need to be passed every time
@@ -198,6 +199,17 @@ public class ChangeColor : MonoBehaviour
         return v_normalized;
     }
 
+    public void ColorBands(double[] volt_vec)
+    {
+        for(int i = 0; i < FinalBands.Count; i++)
+        {
+            if (i == high_band_index)
+                continue;
+            Color bandColor = new Color((float)volt_vec[i], 0, 1f - (float)volt_vec[i], .75f);
+            FinalBands[i].material.color = bandColor;
+        }
+    }
+
     public void UpdateRecorders()
     {
         rec_pipe.GetComponent<Transform>().position = new Vector3(rec_pipe.GetComponent<Transform>().position.x, rec_pipe.GetComponent<Transform>().position.y, stim_z - recordingSite * delta_z);
@@ -243,13 +255,13 @@ public class ChangeColor : MonoBehaviour
         myManager.Stimulate();
         if (isDone)
         {
-            StopCoroutine(FadetoClear());
+            //StopCoroutine(FadetoClear());
         }
         isDone = false;
         isStimulating = true;
         rowi = 0;
         coli = 0;
-        StartCoroutine(FadetoClear());
+        //StartCoroutine(FadetoClear());
 
 
     }
@@ -330,6 +342,7 @@ public class ChangeColor : MonoBehaviour
 
     public void HighlightBand(int num_highlight, int num_reset)
     {
+        high_band_index = num_highlight;
         if (num_highlight < 0)
             return;
         ResetBand(num_reset);
@@ -340,6 +353,8 @@ public class ChangeColor : MonoBehaviour
     {
         if(num_reset < 0)
             return;
+        if (num_reset == high_band_index)
+            high_band_index = -1;
         FinalBands[num_reset].material = bandMat_def;
     }
 }

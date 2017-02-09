@@ -9,9 +9,14 @@ public class ScriptManager : MonoBehaviour {
     public GameObject
         pause_label;
 
+    public GameObject audio_obj;
+
+    public GameObject[] particle_spheres;
+
     public WMGTest graph_script;
     public ElectrodeBehavior rec_script;
     public ChangeColor color_script;
+    public FrequencyChange audio_script;
 
     public Material bandMat_high;
     
@@ -33,6 +38,8 @@ public class ScriptManager : MonoBehaviour {
     private int pointBuffer = 4;       //pointBuffer * num_points = number of points stored in buffer
     private bool analysis_mode = false;
 
+    private bool audio_isPlaying=false;
+
     public int e_pos = 30;
 
     private Vector3 vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);    //position Vector at x=30;
@@ -43,6 +50,7 @@ public class ScriptManager : MonoBehaviour {
         graph_script = gui_canvas.GetComponent<WMGTest>();
         rec_script = rec_electrode.GetComponent<ElectrodeBehavior>();
         color_script = color_cube.GetComponent<ChangeColor>();
+        audio_script = audio_obj.GetComponent<FrequencyChange>();
 
         color_script.bandMat_high = bandMat_high;
         //calculate voltage
@@ -76,9 +84,24 @@ public class ScriptManager : MonoBehaviour {
             double total_time = since_stimulation + last_update;
 
             double[] voltage_data = color_script.UpdateVoltage(total_time * time_scale);
-
+            color_script.ColorBands(voltage_data);
             graph_script.AddPoint(voltage_data, (float)(last_update*time_converter));
             since_stimulation = total_time;
+
+            double temp_volt = voltage_data[e_pos];
+
+            if (audio_isPlaying && temp_volt < 0.02)
+            {
+                audio_obj.GetComponent<AudioSource>().Stop();
+                audio_isPlaying = false;
+            }
+            else
+            {
+                if (rec_enabled)
+                    audio_script.PassData(temp_volt);
+                else
+                    audio_script.PassData(voltage_data[band_width]);
+            }
         }
 	}
 
@@ -118,10 +141,17 @@ public class ScriptManager : MonoBehaviour {
     public void Stimulate()
     {
         since_stimulation = 0.01;
+        for(int i = 0; i < particle_spheres.Length; i++)
+        {
+            particle_spheres[i].GetComponent<ParticleSystem>().Emit(100);
+        }
+        audio_obj.GetComponent<AudioSource>().Play();
+        audio_isPlaying = true;
     }
 
     public void UpdateElectrode(int newEPos)
     {
+        rec_enabled = true;
         e_pos = newEPos;
         color_script.ResetBand(e_pos);
         graph_script.RecieveSliderValue(e_pos);
@@ -132,6 +162,12 @@ public class ScriptManager : MonoBehaviour {
     {
         color_script.SetVariable(value);
 
+    }
+
+    public void DisableElectrode()
+    {
+        rec_enabled = false;
+        graph_script.set_recEnabled(false);
     }
 
     public void ToggleMode()
