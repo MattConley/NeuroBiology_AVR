@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f61fb433eafb8cc44aa26ef5839268e7
+timeCreated: 1467295921
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - IonSpawn: {fileID: 140478, guid: ef28b6622026fe1419c8ee27b19a9157, type: 2}
+  - SpawnPosition: {fileID: 479440, guid: 37d2c391f659bac45983d53e3d76625f, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
