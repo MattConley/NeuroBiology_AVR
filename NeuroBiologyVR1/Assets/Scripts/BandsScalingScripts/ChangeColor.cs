@@ -3,10 +3,11 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
+using HoloToolkit.Unity.InputModule;
 
 [RequireComponent(typeof(AudioSource))]
 
-public class ChangeColor : MonoBehaviour
+public class ChangeColor : MonoBehaviour, IFocusable, IInputClickHandler
 {
 
     // Grapher 1 Component
@@ -235,20 +236,20 @@ public class ChangeColor : MonoBehaviour
         }
     }
 
-    /*
-        void Update(){
+    public void OnFocusEnter()
+    {
+        Debug.Log("Enter");
+    }
 
-            if(Input.GetMouseButtonDown(0)){
-                //isStimulating = false;
-                isStimulating = true;
-                rowi = 0;
-                coli = 0;
-                StartCoroutine (FadetoClear());
-            }
+    public void OnFocusExit()
+    {
+        Debug.Log("Exit");
+    }
 
-
-        }
-        */
+    public void OnInputClicked(InputEventData input_data)
+    {
+        OnTrigger();
+    }
 
     public void OnTrigger()
     {

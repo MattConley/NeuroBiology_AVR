@@ -1,15 +1,21 @@
 ﻿using UnityEngine;
 //using UnityEngine.EventSystems;
 using System.Collections;
+using HoloToolkit.Unity.InputModule;
 
-public class ElectrodeBehavior : MonoBehaviour {
+public class ElectrodeBehavior : MonoBehaviour, IInputHandler, IFocusable {
 
     public GameObject cube_manager;
     public GameObject empty_man;
     public Material high_mat;
-    public GameObject player_obj;
+    //public GameObject player_obj;
     public Camera player_cam;
     public GameObject gui_canvas;
+
+    public float plane_dist;
+
+    public Plane band_plane;
+    //public GameObject band_plane;
 
     private Material def_mat;
     private Material band_def;
@@ -29,14 +35,25 @@ public class ElectrodeBehavior : MonoBehaviour {
     private float tip_ypos, tip_zpos;
 
     private Vector3 pointer_pos;
-    private Vector3 vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);    //position Vector at x=30;
+    //private Vector3 vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);    //position Vector at x=30; //Before Scale Change
+
+    private Vector3 vec_oldPos = new Vector3(3.7f, 4.85f, 23.75f);    //position Vector at x=30;
+
+    private Ray holo_view;
 
     //public GameObject
 
     private bool isDragging = false;
 
+    public bool isHolo;
+
 	// Use this for initialization
 	void Start () {
+        if(isHolo)
+            vec_oldPos = new Vector3(3.7f, 4.85f, 23.75f);
+        else
+            vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);
+
         last_band = 30;
         Vector3 tempVec = vec_oldPos;//this.GetComponent<Transform>().position;
         orig_ypos = tempVec.y;
@@ -49,6 +66,9 @@ public class ElectrodeBehavior : MonoBehaviour {
         //otherScript.bandMat_high = high_mat;
 
         graphScript = gui_canvas.GetComponent<WMGTest>();
+
+        band_plane = new Plane(new Vector3(0, 0, 0), plane_dist);
+        
     }
 	
     private void updateBand(float z_pos)
@@ -89,8 +109,21 @@ public class ElectrodeBehavior : MonoBehaviour {
 	void Update () {
         if (isDragging)
         {
-            float cam_z_depth = Mathf.Abs(player_obj.GetComponent<Transform>().position.x - x_pos);
-            pointer_pos = player_cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, cam_z_depth));
+            float cam_z_depth = Mathf.Abs(player_cam.GetComponent<Transform>().position.x - x_pos);
+
+            
+            if (isHolo)
+            {
+                holo_view = new Ray(player_cam.transform.position, player_cam.transform.forward);
+                float dist;
+                band_plane.Raycast(holo_view, out dist);
+                pointer_pos = holo_view.GetPoint(dist);
+            }
+            else
+            {
+                pointer_pos = player_cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, cam_z_depth));
+            }
+
             //float y_intersect = 0f, z_intersect = 0f;
             //calc camera-pointer ray intersection with cable x-y plane
 
@@ -121,6 +154,34 @@ public class ElectrodeBehavior : MonoBehaviour {
         }
     }
 
+    public void OnInputDown(InputEventData hold_data)
+    {
+        Debug.Log("Begun");
+        onDrag(true);
+    }
+
+    public void OnInputUp(InputEventData hold_data)
+    {
+        Debug.Log("Can");
+        onDrag(false);
+    }
+
+    public void OnHoldCompleted(HoldEventData hold_data)
+    {
+        Debug.Log("COmp");
+        onDrag(false);
+    }
+
+    public void OnFocusEnter()
+    {
+        Debug.Log("Enter");
+    }
+
+    public void OnFocusExit()
+    {
+        Debug.Log("Exit");
+    }
+
     public void onDrag(bool isBegun)
     {
         isDragging = isBegun;
@@ -129,7 +190,21 @@ public class ElectrodeBehavior : MonoBehaviour {
             //disable graph series 2
             //graphScript.set_recEnabled(false);
             myManager.DisableElectrode();
-            pointer_pos = player_cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Mathf.Abs(player_obj.GetComponent<Transform>().position.x - x_pos)));
+            
+            if (isHolo)
+            {
+                holo_view = new Ray(player_cam.transform.position, player_cam.transform.forward);
+                float dist;
+                band_plane.Raycast(holo_view, out dist);
+                pointer_pos = holo_view.GetPoint(dist);
+            }
+            else
+            {
+                pointer_pos = player_cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Mathf.Abs(player_cam.GetComponent<Transform>().position.x - x_pos)));
+            }
+
+            Debug.Log(pointer_pos);
+
             click_ypos = this.GetComponent<Transform>().position.y - pointer_pos.y;
         }
         else

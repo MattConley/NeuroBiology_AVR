@@ -41,6 +41,7 @@ public class ScriptManager : MonoBehaviour {
     private bool audio_isPlaying=false;
 
     public int e_pos = 30;
+    public bool spacePause;
 
     private Vector3 vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);    //position Vector at x=30;
 
@@ -68,7 +69,10 @@ public class ScriptManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (Input.GetKeyDown(KeyCode.Space))
-            TogglePause();
+        {
+            if(spacePause)
+                TogglePause();
+        }
         else if (isPaused)
             return;
         if (since_stimulation == 0.01)     //continuous stimulation framework
