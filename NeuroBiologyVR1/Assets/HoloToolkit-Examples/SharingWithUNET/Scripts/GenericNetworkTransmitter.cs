@@ -72,7 +72,8 @@ public class GenericNetworkTransmitter : Singleton<GenericNetworkTransmitter>
     }
 
     // A lot of the work done in this class can only be done in UWP. The editor is not a UWP app.
-#if !UNITY_EDITOR
+
+#if !UNITY_EDITOR && !UNITY_STANDALONE
     /// <summary>
     /// Tracks the network connection to the remote machine we are sending meshes to.
     /// </summary>
