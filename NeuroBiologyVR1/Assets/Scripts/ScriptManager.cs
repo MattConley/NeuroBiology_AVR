@@ -5,9 +5,12 @@ using System.Collections;
 public class ScriptManager : MonoBehaviour {
 
     public GameObject
-        gui_canvas, rec_electrode, color_cube, player_obj, player_cam;
+        gui_canvas, rec_electrode, color_cube, player_obj, player_cam,
+        plus_toggle, minus_toggle;
     public GameObject
-        pause_label;
+        pause_label, plus_label, minus_label;
+
+    public TransformUp stim_tran, scale_tran, prompt_tran;
 
     public GameObject audio_obj;
 
@@ -17,6 +20,7 @@ public class ScriptManager : MonoBehaviour {
     public ElectrodeBehavior rec_script;
     public ChangeColor color_script;
     public FrequencyChange audio_script;
+    public BandsScaling band_script;
 
     public Material bandMat_high;
     
@@ -34,7 +38,7 @@ public class ScriptManager : MonoBehaviour {
     private double time_scale = 0.00002;         //seconds * time_scale = simulated seconds
     private double time_converter = 20;          //seconds * time_converter = simulated microseconds
 
-    private int num_points = 55;
+    private int num_points = 25;    //was 55
     private int pointBuffer = 4;       //pointBuffer * num_points = number of points stored in buffer
     private bool analysis_mode = false;
 
@@ -42,6 +46,8 @@ public class ScriptManager : MonoBehaviour {
 
     public int e_pos = 30;
     public bool spacePause;
+
+    private float diam_val=1, max_diam=3, min_diam=1;
 
     private Vector3 vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);    //position Vector at x=30;
 
@@ -164,7 +170,36 @@ public class ScriptManager : MonoBehaviour {
 
     public void SetDiameter(float value)
     {
-        color_script.SetVariable(value);
+        //Debug.Log(diam_val);
+        if (diam_val + value > max_diam || diam_val + value < min_diam)
+            return;
+        diam_val += value;
+        color_script.SetVariable(diam_val);
+        band_script.SetBandScale(diam_val);
+        stim_tran.SetTransformUp(diam_val);
+        rec_script.UpdateYPos(diam_val);
+        rec_script.TransformAdjust(diam_val);
+        scale_tran.SetTransformUp(diam_val);
+        prompt_tran.SetTransformUp(diam_val);
+
+        
+
+        //Debug.Log(diam_val);
+
+        if (diam_val == max_diam)
+        {
+            //set plus to grey
+            plus_toggle.SetActive(false);
+        } else if (diam_val == min_diam)
+        {
+            //set minus to grey
+            minus_toggle.SetActive(false);
+        } else
+        {
+            plus_toggle.SetActive(true);
+            minus_toggle.SetActive(true);
+
+        }
 
     }
 
@@ -184,4 +219,5 @@ public class ScriptManager : MonoBehaviour {
             TogglePause();
         }
     }
+
 }

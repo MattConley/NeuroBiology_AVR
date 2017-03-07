@@ -282,4 +282,20 @@ public class WMGTest : MonoBehaviour
 
     }
 
+    public void Rescale_Voltage(float maxVal)
+    {
+        graph.yAxis.AxisMaxValue = maxVal;
+        //graph.yAxis.UpdateAxesMinMaxValues();
+    }
+
+    public void Rescale_Time(float rVal)
+    {
+
+    }
+
+    public void Rescale_All(float vVal, float tVal)
+    {
+
+    }
+
 }

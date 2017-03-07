@@ -2,8 +2,10 @@
 //using UnityEngine.EventSystems;
 using System.Collections;
 using HoloToolkit.Unity.InputModule;
+using UnityEngine.VR.WSA.Input;
+using System;
 
-public class ElectrodeBehavior : MonoBehaviour, IInputHandler, IFocusable {
+public class ElectrodeBehavior : MonoBehaviour, /*IInputHandler, IHoldHandler,*/ IFocusable/*, IManipulationHandler*/ {
 
     public GameObject cube_manager;
     public GameObject empty_man;
@@ -39,13 +41,17 @@ public class ElectrodeBehavior : MonoBehaviour, IInputHandler, IFocusable {
 
     private Vector3 vec_oldPos = new Vector3(3.7f, 4.85f, 23.75f);    //position Vector at x=30;
 
+    private Vector3 old_manip = new Vector3(), current_manip;
+
     private Ray holo_view;
 
     //public GameObject
 
     private bool isDragging = false;
 
-    public bool isHolo;
+    public bool isHolo, notToolkit;
+
+    private GestureRecognizer gesture_rec;
 
 	// Use this for initialization
 	void Start () {
@@ -54,8 +60,19 @@ public class ElectrodeBehavior : MonoBehaviour, IInputHandler, IFocusable {
         else
             vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);
 
+        /**/
+        gesture_rec = new GestureRecognizer();
+        gesture_rec.SetRecognizableGestures(GestureSettings.ManipulationTranslate);
+        gesture_rec.ManipulationStartedEvent += Manipulation_Started;
+        gesture_rec.ManipulationCompletedEvent += Manipulation_Finished;
+        gesture_rec.ManipulationCanceledEvent += Manipulation_Cancelled;
+        gesture_rec.ManipulationUpdatedEvent += Manipulation_Updated;
+        gesture_rec.StartCapturingGestures();
+        /**/
+
         last_band = 30;
-        Vector3 tempVec = vec_oldPos;//this.GetComponent<Transform>().position;
+        //Vector3 tempVec = vec_oldPos;//this.GetComponent<Transform>().position;
+        Vector3 tempVec = this.GetComponent<Transform>().localPosition;
         orig_ypos = tempVec.y;
         y_pos = tempVec.y;
         click_ypos = 0;
@@ -70,7 +87,59 @@ public class ElectrodeBehavior : MonoBehaviour, IInputHandler, IFocusable {
         band_plane = new Plane(new Vector3(0, 0, 0), plane_dist);
         
     }
-	
+
+    /**/
+    private void OnDestroy()
+    {
+        gesture_rec.StopCapturingGestures();
+        gesture_rec.ManipulationStartedEvent -= Manipulation_Started;
+        gesture_rec.ManipulationCompletedEvent -= Manipulation_Finished;
+        gesture_rec.ManipulationCanceledEvent -= Manipulation_Cancelled;
+        gesture_rec.ManipulationUpdatedEvent -= Manipulation_Updated;
+    }/**/
+    /**/
+    private void Manipulation_Updated(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
+    {
+        current_manip = cumulativeDelta;
+        //throw new System.NotImplementedException();
+    }
+
+    private void Manipulation_Cancelled(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
+    {
+        Debug.Log("Manipulation Cancelled");
+        current_manip = cumulativeDelta;
+        onDrag(false);
+        //throw new System.NotImplementedException();
+    }
+
+    private void Manipulation_Finished(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
+    {
+        Debug.Log("Manipulation Finished");
+        current_manip = cumulativeDelta;
+        onDrag(false);
+        //throw new System.NotImplementedException();
+    }
+
+    private void Manipulation_Started(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
+    {
+        Debug.Log("MANIPULATION Started");
+        current_manip = cumulativeDelta;
+        onDrag(true);
+        //throw new System.NotImplementedException();
+    }/**/
+    
+    public void TransformAdjust(float val)
+    {
+        if (val == scale)
+            return;
+        else if (val < scale)
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y - (scale - val) * increment, transform.localPosition.z);
+        else
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + (val - scale) * increment, transform.localPosition.z);
+        scale = val;
+
+    }
+
     private void updateBand(float z_pos)
     {
         int new_band = (int)(-1 * (z_pos / 5)) + 1;
@@ -105,34 +174,82 @@ public class ElectrodeBehavior : MonoBehaviour, IInputHandler, IFocusable {
         y_pos = orig_ypos + (value - 1) * increment;
     }
 
+    public LayerMask raycastLayer;
+
 	// Update is called once per frame
 	void Update () {
+        /*GESTURES EXAMPLE
+        GestureRecognizer gr = new GestureRecognizer();
+        gr.ManipulationStartedEvent += Gr_ManipulationStartedEvent;
+        gr.SetRecognizableGestures(GestureSettings.ManipulationTranslate);
+        gr.StartCapturingGestures();
+        */
+
+
         if (isDragging)
         {
+
+            /*RaycastHit hit;
+            if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 10f, raycastLayer)){
+                hit.point
+            }*/
+
+
             float cam_z_depth = Mathf.Abs(player_cam.GetComponent<Transform>().position.x - x_pos);
 
-            
-            if (isHolo)
+            if (isHolo && notToolkit)
+            {
+                float manx, many, manz;     //need to be broken down because of 90 deg Y rotation
+                manx = current_manip.x;
+                many = current_manip.y;
+                manz = current_manip.z;
+
+                this.GetComponent<Transform>().localPosition += new Vector3(5*manz, 10*many, -5*manx);
+
+                //this.GetComponent<Transform>().localPosition += (5*current_manip);
+                //this.GetComponent<Transform>().position += current_manip;
+                Debug.Log(current_manip);
+            }
+            else if (isHolo)
             {
                 holo_view = new Ray(player_cam.transform.position, player_cam.transform.forward);
                 float dist;
                 band_plane.Raycast(holo_view, out dist);
                 pointer_pos = holo_view.GetPoint(dist);
+
+                RaycastHit gaze_hit;
+
+                if(Physics.Raycast(player_cam.transform.position, player_cam.transform.forward, out gaze_hit, Mathf.Infinity, raycastLayer))
+                {
+                    pointer_pos = gaze_hit.point;
+                }
+                else
+                {
+                    onDrag(false);
+                    return;
+                }
+                this.GetComponent<Transform>().localPosition = new Vector3(x_pos, pointer_pos.y + click_ypos, pointer_pos.z);
             }
             else
             {
                 pointer_pos = player_cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, cam_z_depth));
+                this.GetComponent<Transform>().localPosition = new Vector3(x_pos, pointer_pos.y + click_ypos, pointer_pos.z);
             }
+
+            //Debug.Log(pointer_pos);
 
             //float y_intersect = 0f, z_intersect = 0f;
             //calc camera-pointer ray intersection with cable x-y plane
 
             //set electrode position based on mouse/pointer
-            this.GetComponent<Transform>().position = new Vector3(x_pos, pointer_pos.y + click_ypos, pointer_pos.z);
+            //this.GetComponent<Transform>().position = new Vector3(x_pos, pointer_pos.y + click_ypos, pointer_pos.z);
+            
+            
 
-            if (this.GetComponent<Transform>().position.y - 120 <= 0)
+            if (this.GetComponent<Transform>().localPosition.y - 120 <= 0)
             {
-                updateBand(pointer_pos.z);
+                //updateBand(pointer_pos.z);
+                updateBand(this.transform.localPosition.z);
             }
             else
             {
@@ -161,6 +278,18 @@ public class ElectrodeBehavior : MonoBehaviour, IInputHandler, IFocusable {
     }
 
     public void OnInputUp(InputEventData hold_data)
+    {
+        Debug.Log("Can");
+        onDrag(false);
+    }
+
+    public void OnHoldStarted(HoldEventData hold_data)
+    {
+        Debug.Log("HoldStarted");
+        onDrag(true);
+    }
+
+    public void OnHoldCanceled(HoldEventData hold_data)
     {
         Debug.Log("Can");
         onDrag(false);
@@ -197,6 +326,13 @@ public class ElectrodeBehavior : MonoBehaviour, IInputHandler, IFocusable {
                 float dist;
                 band_plane.Raycast(holo_view, out dist);
                 pointer_pos = holo_view.GetPoint(dist);
+
+                RaycastHit gaze_hit;
+
+                if (Physics.Raycast(player_cam.transform.position, player_cam.transform.forward, out gaze_hit, Mathf.Infinity, raycastLayer))
+                {
+                    pointer_pos = gaze_hit.point;
+                }
             }
             else
             {
@@ -205,7 +341,8 @@ public class ElectrodeBehavior : MonoBehaviour, IInputHandler, IFocusable {
 
             Debug.Log(pointer_pos);
 
-            click_ypos = this.GetComponent<Transform>().position.y - pointer_pos.y;
+            //click_ypos = this.GetComponent<Transform>().position.y - pointer_pos.y;
+            click_ypos = this.GetComponent<Transform>().localPosition.y - pointer_pos.y;
         }
         else
         {
@@ -213,7 +350,8 @@ public class ElectrodeBehavior : MonoBehaviour, IInputHandler, IFocusable {
             {
                 myManager.UpdateElectrode(last_band);
                 //update transform position
-                this.GetComponent<Transform>().position = new Vector3(x_pos, y_pos, -1f * (float)((last_band - 1) * 5 + 2.5));
+                //this.GetComponent<Transform>().position = new Vector3(x_pos, y_pos, -1f * (float)((last_band - 1) * 5 + 2.5));
+                this.GetComponent<Transform>().localPosition = new Vector3(x_pos, y_pos, -1f * (float)((last_band - 1) * 5 + 2.5));
                 //reset target_band's material
                 //otherScript.ResetBand(last_band);
                 //enable graph series 2
@@ -225,4 +363,6 @@ public class ElectrodeBehavior : MonoBehaviour, IInputHandler, IFocusable {
             }
         }
     }
+
+    
 }
