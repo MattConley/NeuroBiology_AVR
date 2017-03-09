@@ -10,6 +10,8 @@ public class ScriptManager : MonoBehaviour {
     public GameObject
         pause_label, plus_label, minus_label;
 
+    public GameObject[] initial_toggles, secondary_toggles;
+
     public TransformUp stim_tran, scale_tran, prompt_tran;
 
     public GameObject audio_obj;
@@ -24,7 +26,7 @@ public class ScriptManager : MonoBehaviour {
 
     public Material bandMat_high;
     
-    public bool graph_enabled = false;
+    private bool graph_enabled = false;
     public bool rec_enabled = false;
     private bool isPaused = false;
 
@@ -122,6 +124,16 @@ public class ScriptManager : MonoBehaviour {
 
     public void ToggleGraph()
     {
+        graph_enabled = !graph_enabled;
+        for(int i = 0; i < initial_toggles.Length; i++)
+        {
+            initial_toggles[i].SetActive(!graph_enabled);
+        }
+        for (int i = 0; i < secondary_toggles.Length; i++)
+        {
+            secondary_toggles[i].SetActive(graph_enabled);
+        }
+
         graph_script.ToggleGraph();
     }
 
@@ -189,17 +201,47 @@ public class ScriptManager : MonoBehaviour {
         if (diam_val == max_diam)
         {
             //set plus to grey
+            plus_label.GetComponent<Text>().color = Color.gray; //new Color(90f, 90f, 90f, 250f);
             plus_toggle.SetActive(false);
         } else if (diam_val == min_diam)
         {
             //set minus to grey
+            minus_label.GetComponent<Text>().color = Color.gray;
             minus_toggle.SetActive(false);
         } else
         {
+            plus_label.GetComponent<Text>().color = new Color(250, 250, 250);
+            minus_label.GetComponent<Text>().color = new Color(250, 250, 250);
+
             plus_toggle.SetActive(true);
             minus_toggle.SetActive(true);
 
         }
+
+    }
+
+    public void RescaleGraph()
+    {
+
+        float newMax;
+
+        switch ((int)diam_val)
+        {
+            case 1:
+                newMax = 1f;
+                break;
+            case 2:
+                newMax = 0.35f;
+                break;
+            case 3:
+                newMax = 0.17f;
+                break;
+            default:
+                newMax = 1f;
+                break;
+        }
+
+        graph_script.Rescale_Voltage(newMax);
 
     }
 

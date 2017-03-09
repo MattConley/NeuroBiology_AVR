@@ -22,6 +22,7 @@ public class HTK_Interactive : MonoBehaviour, IInputHandler, IFocusable {
         switch (myFunction)
         {
             case InteractableFunction.graphToggle:
+                this.GetComponent<MeshRenderer>().enabled = false;      //with two toggles, the gaze doesn't leave
                 myMan.ToggleGraph();
                 break;
             case InteractableFunction.modeToggle:
@@ -37,6 +38,7 @@ public class HTK_Interactive : MonoBehaviour, IInputHandler, IFocusable {
                 myMan.SetDiameter(1);
                 break;
             case InteractableFunction.graphRescale:
+                myMan.RescaleGraph();
                 break;
             default:
                 break;
@@ -60,11 +62,11 @@ public class HTK_Interactive : MonoBehaviour, IInputHandler, IFocusable {
 
     public void OnFocusEnter()
     {
-        //enable mesh renderer
+        this.GetComponent<MeshRenderer>().enabled = true;
     }
 
     public void OnFocusExit()
     {
-        //disable mesh renderer
+        this.GetComponent<MeshRenderer>().enabled = false;
     }
 }

@@ -5,7 +5,7 @@ using HoloToolkit.Unity.InputModule;
 using UnityEngine.VR.WSA.Input;
 using System;
 
-public class ElectrodeBehavior : MonoBehaviour, /*IInputHandler, IHoldHandler,*/ IFocusable/*, IManipulationHandler*/ {
+public class ElectrodeBehavior : MonoBehaviour, IFocusable {
 
     public GameObject cube_manager;
     public GameObject empty_man;
@@ -47,7 +47,7 @@ public class ElectrodeBehavior : MonoBehaviour, /*IInputHandler, IHoldHandler,*/
 
     //public GameObject
 
-    private bool isDragging = false;
+    private bool isDragging = false, isFocused = false;
 
     public bool isHolo, notToolkit;
 
@@ -55,11 +55,13 @@ public class ElectrodeBehavior : MonoBehaviour, /*IInputHandler, IHoldHandler,*/
 
 	// Use this for initialization
 	void Start () {
-        if(isHolo)
+        /*
+        if (isHolo)
             vec_oldPos = new Vector3(3.7f, 4.85f, 23.75f);
         else
             vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);
-
+        */
+        vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);    //localPos uses this value
         /**/
         gesture_rec = new GestureRecognizer();
         gesture_rec.SetRecognizableGestures(GestureSettings.ManipulationTranslate);
@@ -122,6 +124,8 @@ public class ElectrodeBehavior : MonoBehaviour, /*IInputHandler, IHoldHandler,*/
 
     private void Manipulation_Started(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
     {
+        if (!isFocused)
+            return;
         Debug.Log("MANIPULATION Started");
         current_manip = cumulativeDelta;
         onDrag(true);
@@ -261,6 +265,7 @@ public class ElectrodeBehavior : MonoBehaviour, /*IInputHandler, IHoldHandler,*/
 
     public void Mouse_Hover(bool isEnter)
     {
+        isFocused = isEnter;
         if (isEnter)
         {
             this.GetComponent<MeshRenderer>().material = high_mat;
@@ -271,44 +276,16 @@ public class ElectrodeBehavior : MonoBehaviour, /*IInputHandler, IHoldHandler,*/
         }
     }
 
-    public void OnInputDown(InputEventData hold_data)
-    {
-        Debug.Log("Begun");
-        onDrag(true);
-    }
-
-    public void OnInputUp(InputEventData hold_data)
-    {
-        Debug.Log("Can");
-        onDrag(false);
-    }
-
-    public void OnHoldStarted(HoldEventData hold_data)
-    {
-        Debug.Log("HoldStarted");
-        onDrag(true);
-    }
-
-    public void OnHoldCanceled(HoldEventData hold_data)
-    {
-        Debug.Log("Can");
-        onDrag(false);
-    }
-
-    public void OnHoldCompleted(HoldEventData hold_data)
-    {
-        Debug.Log("COmp");
-        onDrag(false);
-    }
-
     public void OnFocusEnter()
     {
         Debug.Log("Enter");
+        Mouse_Hover(true);
     }
 
     public void OnFocusExit()
     {
         Debug.Log("Exit");
+        Mouse_Hover(false);
     }
 
     public void onDrag(bool isBegun)

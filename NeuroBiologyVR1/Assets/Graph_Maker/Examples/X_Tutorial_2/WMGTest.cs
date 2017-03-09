@@ -81,7 +81,7 @@ public class WMGTest : MonoBehaviour
         //ToggleGraph();
 
         StartCoroutine(DisableGraph());
-
+        
         //series1.pointValues
         //graph.xAxis.AxisMaxValue = x;
 
