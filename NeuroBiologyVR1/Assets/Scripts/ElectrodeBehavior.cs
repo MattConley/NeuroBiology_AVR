@@ -43,6 +43,8 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
 
     private Vector3 old_manip = new Vector3(), current_manip;
 
+    private Vector3 pre_Pos = new Vector3();
+
     private Ray holo_view;
 
     //public GameObject
@@ -73,8 +75,8 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
         /**/
 
         last_band = 30;
-        //Vector3 tempVec = vec_oldPos;//this.GetComponent<Transform>().position;
-        Vector3 tempVec = this.GetComponent<Transform>().localPosition;
+        Vector3 tempVec = vec_oldPos;//this.GetComponent<Transform>().position;
+        pre_Pos = this.GetComponent<Transform>().localPosition;
         orig_ypos = tempVec.y;
         y_pos = tempVec.y;
         click_ypos = 0;
@@ -337,6 +339,7 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
             else
             {
                 myManager.DisableElectrode();
+
             }
         }
     }
