@@ -51,15 +51,27 @@ public class ScriptManager : MonoBehaviour {
     public int e_pos = 30;
     public bool spacePause;
 
+    public bool enableParticles;
+
     private float diam_val=1, max_diam=3, min_diam=1;
 
     private Vector3 vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);    //position Vector at x=30;
 
-    private Vector3 updatedLocalPos;
+    
 
     public bool isMultiplayer;
+    public bool changedComponent { get; private set; }      //true if any component has been updated
 
-    public bool passedTransform { get; private set; }
+    //true if the simulation should pause, stimulate, toggle graph on, rescale, toggle mode to analysis, or update diameter
+    private bool passedPause, passedStim, passedGraph, passedRescale, passedMode, passedDiameter;
+    
+
+
+    public bool passedTransform { get; private set; }       //toggled for electrode position update
+    private bool updatedBool;
+    private short updatedShort;
+    private Vector3 updatedVec3;
+
 
     //Current localhost for copy/paste: 169.254.80.80
 
@@ -68,8 +80,8 @@ public class ScriptManager : MonoBehaviour {
         //for Sharing
         if (isMultiplayer)
         {
-            CustomMessages.Instance.MessageHandlers[CustomMessages.TestMessageID.HeadTransform] = this.OnShareElectrode;
-            
+            CustomMessages.Instance.MessageHandlers[CustomMessages.TestMessageID.HeadTransform] = this.ReceiveMessage;
+            SharingStage.Instance.SessionsTracker.UserJoined += OnSessionJoined;
             //SharingSessionTracker.Instance.SessionJoined += this.OnSessionJoined;
 
         }
@@ -93,8 +105,10 @@ public class ScriptManager : MonoBehaviour {
 
 	}
 	
-    private void OnSessionJoined(object sender)
+    private void OnSessionJoined(Session session, User user)
     {
+        int numUsers = session.GetUserCount();
+        
         passedTransform = false;
         if (passedTransform)
         {
@@ -102,32 +116,101 @@ public class ScriptManager : MonoBehaviour {
         }
     }
 
-    public void OnShareElectrode(NetworkInMessage msg)
+    public void ReceiveMessage(NetworkInMessage msg)
     {
         long userID = msg.ReadInt64();
 
-        updatedLocalPos = CustomMessages.Instance.ReadVector3(msg);
+        short message_type = msg.ReadInt16();
 
-        Debug.Log(updatedLocalPos);
+        switch (message_type)
+        {
+            case 0:     //exit byte
+                break;
+            case 1:     //pause byte
+                passedPause = true;
+                updatedBool = (msg.ReadByte() == 1);
+                break;
+            case 2:     //stimulate byte
+                passedStim = true;
+                updatedBool = (msg.ReadByte() == 1);
+                break;
+            case 3:     //electrode localpos vec3 (and maybe enabled bool later)
+                updatedVec3 = CustomMessages.Instance.ReadVector3(msg);
+                //Debug.Log(updatedLocalPos);
+                passedTransform = true;
+                break;
+            case 4:     //graph enabled byte
+                passedGraph = true;
+                updatedBool = (msg.ReadByte() == 1);
+                break;
+            case 5:     //rescale byte
+                passedRescale = true;
+                updatedBool = (msg.ReadByte() == 1);
+                break;
+            case 6:     //analysis mode byte
+                passedMode = true;
+                updatedBool = (msg.ReadByte() == 1);
+                break;
+            case 7:     //diameter value short
+                passedDiameter = true;
+                updatedShort = msg.ReadInt16();
+                break;
+            default:
+                break;
+        }
 
-        passedTransform = true;
+        changedComponent = true;
     }
 
     public void SendUpdatedElectrode(Vector3 newLocPos)
     {
         passedTransform = true;
-        updatedLocalPos = newLocPos;
-        CustomMessages.Instance.SendElectrodeTransform(newLocPos);
+        updatedVec3 = newLocPos;
+        CustomMessages.Instance.SendVec3(3, newLocPos);
     }
 
     private bool tempTestBool = true;
 
 	// Update is called once per frame
 	void Update () {
-        if (passedTransform)
+        if (changedComponent)
         {
-            rec_script.SetLocalPos(updatedLocalPos);
-            passedTransform = false;
+            if (passedPause)
+            {
+                TogglePause();
+                passedPause = false;
+            }
+            if (passedStim)
+            {
+                Stimulate();
+                passedStim = false;
+            }
+            if (passedTransform)
+            {
+                rec_script.SetLocalPos(updatedVec3);
+                passedTransform = false;
+            }
+            if (passedGraph)
+            {
+                ToggleGraph();
+                passedGraph = false;
+            }
+            if (passedRescale)
+            {
+                RescaleGraph();
+                passedRescale = false;
+            }
+            if (passedMode)
+            {
+                ToggleMode();
+                passedMode = false;
+            }
+            if (passedDiameter)
+            {
+                SetDiameter(updatedShort);
+                passedDiameter = false;
+            }
+            changedComponent = false;
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -195,6 +278,8 @@ public class ScriptManager : MonoBehaviour {
         }
 
         graph_script.ToggleGraph();
+        if (!passedGraph)
+            CustomMessages.Instance.SendByte(4, 1);
     }
 
     public bool TogglePause()       //returns whether the time is NOW paused -> after calling TogglePause
@@ -219,18 +304,25 @@ public class ScriptManager : MonoBehaviour {
             pause_label.GetComponent<Text>().text = "Pause";
         }
         isPaused = !isPaused;
+        if (!passedPause)
+            CustomMessages.Instance.SendByte(1, 1);     
         return isPaused;
     }
 
     public void Stimulate()
     {
         since_stimulation = 0.01;
-        for(int i = 0; i < particle_spheres.Length; i++)
+        if (enableParticles)
         {
-            particle_spheres[i].GetComponent<ParticleSystem>().Emit(100);
+            for (int i = 0; i < particle_spheres.Length; i++)
+            {
+                particle_spheres[i].GetComponent<ParticleSystem>().Emit(100);
+            }
         }
         audio_obj.GetComponent<AudioSource>().Play();
         audio_isPlaying = true;
+        if (!passedStim)
+            CustomMessages.Instance.SendByte(2, 1);
     }
 
     public void UpdateElectrode(int newEPos)
@@ -280,6 +372,8 @@ public class ScriptManager : MonoBehaviour {
 
         }
 
+        if (!passedDiameter)
+            CustomMessages.Instance.SendShort(7, (short)diam_val);
     }
 
     public void RescaleGraph()
@@ -305,6 +399,8 @@ public class ScriptManager : MonoBehaviour {
 
         graph_script.Rescale_Voltage(newMax);
 
+        if (!passedRescale)
+            CustomMessages.Instance.SendByte(5, 1);
     }
 
     public void DisableElectrode()
@@ -322,6 +418,9 @@ public class ScriptManager : MonoBehaviour {
         {
             TogglePause();
         }
+
+        if (!passedMode)
+            CustomMessages.Instance.SendByte(6, 1);
     }
 
 }

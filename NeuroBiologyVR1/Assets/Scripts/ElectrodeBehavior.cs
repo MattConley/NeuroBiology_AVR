@@ -347,6 +347,12 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
                 else
                 {
                     myManager.DisableElectrode();
+                    float temp_ypos = this.transform.localPosition.y, temp_zpos = this.transform.localPosition.z;
+                    if (temp_ypos < 0 || temp_ypos > 275)
+                        temp_ypos = pre_Pos.y;
+                    if (temp_zpos < -250 || temp_zpos > 50)
+                        temp_zpos = pre_Pos.z;
+                    this.transform.localPosition = new Vector3(x_pos, temp_ypos, temp_zpos);
                 }
 
                 //electrode position needs to be sent out

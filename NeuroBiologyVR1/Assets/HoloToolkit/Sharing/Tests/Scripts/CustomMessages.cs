@@ -158,6 +158,57 @@ namespace HoloToolkit.Sharing.Tests
             }
         }
 
+        public void SendByte(short msgType, byte bVal)
+        {
+            if (serverConnection != null && serverConnection.IsConnected())
+            {
+                // Create an outgoing network message to contain all the info we want to send
+                NetworkOutMessage msg = CreateMessage((byte)TestMessageID.HeadTransform);
+                msg.Write(msgType);
+                msg.Write(bVal);
+                // Send the message as a broadcast, which will cause the server to forward it to all other users in the session.
+                serverConnection.Broadcast(
+                    msg,
+                    MessagePriority.Immediate,
+                    MessageReliability.UnreliableSequenced,
+                    MessageChannel.Avatar);
+            }
+        }
+
+        public void SendShort(short msgType, short sVal)
+        {
+            if (serverConnection != null && serverConnection.IsConnected())
+            {
+                // Create an outgoing network message to contain all the info we want to send
+                NetworkOutMessage msg = CreateMessage((byte)TestMessageID.HeadTransform);
+                msg.Write(msgType);
+                msg.Write(sVal);
+                // Send the message as a broadcast, which will cause the server to forward it to all other users in the session.
+                serverConnection.Broadcast(
+                    msg,
+                    MessagePriority.Immediate,
+                    MessageReliability.UnreliableSequenced,
+                    MessageChannel.Avatar);
+            }
+        }
+
+        public void SendVec3(short msgType, Vector3 vVal)
+        {
+            if (serverConnection != null && serverConnection.IsConnected())
+            {
+                // Create an outgoing network message to contain all the info we want to send
+                NetworkOutMessage msg = CreateMessage((byte)TestMessageID.HeadTransform);
+                msg.Write(msgType);
+                AppendVector3(msg, vVal);
+                // Send the message as a broadcast, which will cause the server to forward it to all other users in the session.
+                serverConnection.Broadcast(
+                    msg,
+                    MessagePriority.Immediate,
+                    MessageReliability.UnreliableSequenced,
+                    MessageChannel.Avatar);
+            }
+        }
+
         protected override void OnDestroy()
         {
             base.OnDestroy();

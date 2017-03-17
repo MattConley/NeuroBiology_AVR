@@ -32,9 +32,11 @@ public class HTK_Interactive : MonoBehaviour, IInputHandler, IFocusable {
                 myMan.TogglePause();
                 break;
             case InteractableFunction.diameterMinus:
+                this.GetComponent<MeshRenderer>().enabled = false;      //same issue as toggle, sometimes
                 myMan.SetDiameter(-1);
                 break;
             case InteractableFunction.diameterPlus:
+                this.GetComponent<MeshRenderer>().enabled = false;
                 myMan.SetDiameter(1);
                 break;
             case InteractableFunction.graphRescale:

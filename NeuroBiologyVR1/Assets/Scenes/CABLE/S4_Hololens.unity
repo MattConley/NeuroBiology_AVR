@@ -1171,6 +1171,7 @@ MonoBehaviour:
   band_width: 20
   e_pos: 30
   spacePause: 0
+  enableParticles: 0
   isMultiplayer: 1
 --- !u!23 &339988082 stripped
 MeshRenderer:
@@ -5486,7 +5487,6 @@ GameObject:
   - component: {fileID: 1559999917}
   - component: {fileID: 1559999916}
   - component: {fileID: 1559999921}
-  - component: {fileID: 1559999915}
   - component: {fileID: 1559999924}
   - component: {fileID: 1559999925}
   - component: {fileID: 1559999923}
@@ -5497,36 +5497,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1559999915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1559999914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1862395651, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1559999916}
-          m_MethodName: OnTrigger
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
-        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  delegates: []
 --- !u!114 &1559999916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5763,7 +5733,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1032734949
+  randomSeed: -1705470245
   InitialModule:
     serializedVersion: 3
     enabled: 1
