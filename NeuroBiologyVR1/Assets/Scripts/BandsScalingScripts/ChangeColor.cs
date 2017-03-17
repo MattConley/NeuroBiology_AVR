@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
 using HoloToolkit.Unity.InputModule;
+using System;
 
 [RequireComponent(typeof(AudioSource))]
 
@@ -246,7 +247,7 @@ public class ChangeColor : MonoBehaviour, IFocusable, IInputClickHandler
         Debug.Log("Exit");
     }
 
-    public void OnInputClicked(InputEventData input_data)
+    public void OnInputClicked(InputClickedEventData input_data)
     {
         OnTrigger();
     }
@@ -358,4 +359,6 @@ public class ChangeColor : MonoBehaviour, IFocusable, IInputClickHandler
             high_band_index = -1;
         FinalBands[num_reset].material = bandMat_def;
     }
+
+    
 }

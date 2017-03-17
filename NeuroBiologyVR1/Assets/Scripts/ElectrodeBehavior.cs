@@ -214,7 +214,7 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
 
                 //this.GetComponent<Transform>().localPosition += (5*current_manip);
                 //this.GetComponent<Transform>().position += current_manip;
-                Debug.Log(current_manip);
+                //Debug.Log(current_manip);
             }
             else if (isHolo)
             {
@@ -298,7 +298,7 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
             //disable graph series 2
             //graphScript.set_recEnabled(false);
             myManager.DisableElectrode();
-            
+
             if (isHolo)
             {
                 holo_view = new Ray(player_cam.transform.position, player_cam.transform.forward);
@@ -325,24 +325,40 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
         }
         else
         {
-            if (last_band >= 0)
+            if (myManager.passedTransform)      //electrode has a new location
             {
-                myManager.UpdateElectrode(last_band);
-                //update transform position
-                //this.GetComponent<Transform>().position = new Vector3(x_pos, y_pos, -1f * (float)((last_band - 1) * 5 + 2.5));
-                this.GetComponent<Transform>().localPosition = new Vector3(x_pos, y_pos, -1f * (float)((last_band - 1) * 5 + 2.5));
-                //reset target_band's material
-                //otherScript.ResetBand(last_band);
-                //enable graph series 2
-                //graphScript.set_recEnabled(true);
+                //do nothing, updated from manager
+                //actually, update last band then updateElectrode
+                return;
             }
             else
             {
-                myManager.DisableElectrode();
+                if (last_band >= 0)
+                {
+                    myManager.UpdateElectrode(last_band);
+                    //update transform position
+                    //this.GetComponent<Transform>().position = new Vector3(x_pos, y_pos, -1f * (float)((last_band - 1) * 5 + 2.5));
+                    this.GetComponent<Transform>().localPosition = new Vector3(x_pos, y_pos, -1f * (float)((last_band - 1) * 5 + 2.5));
+                    //reset target_band's material
+                    //otherScript.ResetBand(last_band);
+                    //enable graph series 2
+                    //graphScript.set_recEnabled(true);
+                }
+                else
+                {
+                    myManager.DisableElectrode();
+                }
 
+                //electrode position needs to be sent out
+                myManager.SendUpdatedElectrode(this.transform.localPosition);
             }
         }
+            
     }
 
+    public void SetLocalPos(Vector3 newLocPos)
+    {
+        this.GetComponent<Transform>().localPosition = newLocPos;
+    }
     
 }

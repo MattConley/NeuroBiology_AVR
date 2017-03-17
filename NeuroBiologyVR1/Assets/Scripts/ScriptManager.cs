@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using HoloToolkit.Sharing;
+using HoloToolkit.Sharing.Tests;
 
 public class ScriptManager : MonoBehaviour {
 
@@ -53,8 +55,25 @@ public class ScriptManager : MonoBehaviour {
 
     private Vector3 vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);    //position Vector at x=30;
 
+    private Vector3 updatedLocalPos;
+
+    public bool isMultiplayer;
+
+    public bool passedTransform { get; private set; }
+
+    //Current localhost for copy/paste: 169.254.80.80
+
     // Use this for initialization
     void Start () {
+        //for Sharing
+        if (isMultiplayer)
+        {
+            CustomMessages.Instance.MessageHandlers[CustomMessages.TestMessageID.HeadTransform] = this.OnShareElectrode;
+            
+            //SharingSessionTracker.Instance.SessionJoined += this.OnSessionJoined;
+
+        }
+
         //get scripts from GameObjects
         graph_script = gui_canvas.GetComponent<WMGTest>();
         rec_script = rec_electrode.GetComponent<ElectrodeBehavior>();
@@ -74,12 +93,52 @@ public class ScriptManager : MonoBehaviour {
 
 	}
 	
+    private void OnSessionJoined(object sender)
+    {
+        passedTransform = false;
+        if (passedTransform)
+        {
+            CustomMessages.Instance.SendElectrodeTransform(rec_electrode.transform.localPosition);
+        }
+    }
+
+    public void OnShareElectrode(NetworkInMessage msg)
+    {
+        long userID = msg.ReadInt64();
+
+        updatedLocalPos = CustomMessages.Instance.ReadVector3(msg);
+
+        Debug.Log(updatedLocalPos);
+
+        passedTransform = true;
+    }
+
+    public void SendUpdatedElectrode(Vector3 newLocPos)
+    {
+        passedTransform = true;
+        updatedLocalPos = newLocPos;
+        CustomMessages.Instance.SendElectrodeTransform(newLocPos);
+    }
+
+    private bool tempTestBool = true;
+
 	// Update is called once per frame
 	void Update () {
+        if (passedTransform)
+        {
+            rec_script.SetLocalPos(updatedLocalPos);
+            passedTransform = false;
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if(spacePause)
                 TogglePause();
+            else if (tempTestBool && graph_enabled)
+            {
+                Vector3 tVec = rec_electrode.transform.localPosition + new Vector3(0f, -50f, 0f);
+                Debug.Log(tVec);
+                SendUpdatedElectrode(tVec);
+            }
         }
         else if (isPaused)
             return;
@@ -117,6 +176,7 @@ public class ScriptManager : MonoBehaviour {
         }
 	}
 
+
     void SetVars()     //set variables to predetermined values
     {
 
@@ -147,6 +207,8 @@ public class ScriptManager : MonoBehaviour {
             color_script.enabled = false;
             rec_script.enabled = false;
             pause_label.GetComponent<Text>().text = "Resume";
+            audio_obj.GetComponent<AudioSource>().Stop();
+            audio_isPlaying = false;
         }
         else
         {
