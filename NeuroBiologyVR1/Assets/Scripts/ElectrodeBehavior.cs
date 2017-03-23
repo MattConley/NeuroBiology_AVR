@@ -47,6 +47,8 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
 
     private Ray holo_view;
 
+    private bool manipStarted = false;
+
     //public GameObject
 
     private bool isDragging = false, isFocused = false;
@@ -110,6 +112,9 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
 
     private void Manipulation_Cancelled(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
     {
+        if (!manipStarted)
+            return;
+        manipStarted = false;
         Debug.Log("Manipulation Cancelled");
         current_manip = cumulativeDelta;
         onDrag(false);
@@ -118,6 +123,9 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
 
     private void Manipulation_Finished(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
     {
+        if (!manipStarted)
+            return;
+        manipStarted = false;
         Debug.Log("Manipulation Finished");
         current_manip = cumulativeDelta;
         onDrag(false);
@@ -128,6 +136,7 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
     {
         if (!isFocused)
             return;
+        manipStarted = true;
         Debug.Log("MANIPULATION Started");
         current_manip = cumulativeDelta;
         onDrag(true);
@@ -209,8 +218,8 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
                 manx = current_manip.x;
                 many = current_manip.y;
                 manz = current_manip.z;
-
-                this.GetComponent<Transform>().localPosition += new Vector3(5*manz, 10*many, -5*manx);
+                                                                            //5     10       -5
+                this.GetComponent<Transform>().localPosition += new Vector3(10*manz, 20*many, -10*manx);
 
                 //this.GetComponent<Transform>().localPosition += (5*current_manip);
                 //this.GetComponent<Transform>().position += current_manip;
@@ -325,14 +334,14 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
         }
         else
         {
-            if (myManager.passedTransform)      //electrode has a new location
+            /*if (myManager.passedTransform)      //electrode has a new location
             {
                 //do nothing, updated from manager
                 //actually, update last band then updateElectrode
                 return;
-            }
-            else
-            {
+            }*/
+            //else
+            //{
                 if (last_band >= 0)
                 {
                     myManager.UpdateElectrode(last_band);
@@ -356,8 +365,8 @@ public class ElectrodeBehavior : MonoBehaviour, IFocusable {
                 }
 
                 //electrode position needs to be sent out
-                myManager.SendUpdatedElectrode(this.transform.localPosition);
-            }
+                //myManager.SendUpdatedElectrode(this.transform.localPosition);
+            //}
         }
             
     }

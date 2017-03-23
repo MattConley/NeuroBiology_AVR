@@ -9,7 +9,8 @@ public class HTK_Interactive : MonoBehaviour, IInputHandler, IFocusable {
     public enum InteractableFunction
     {
         graphToggle, modeToggle, pauseToggle,
-        diameterMinus, diameterPlus, graphRescale
+        diameterMinus, diameterPlus, graphRescale, 
+        applicationExit, particleToggle
     }
     public ScriptManager myMan;
     /*public bool graphToggle, modeToggle, pauseToggle, 
@@ -41,6 +42,12 @@ public class HTK_Interactive : MonoBehaviour, IInputHandler, IFocusable {
                 break;
             case InteractableFunction.graphRescale:
                 myMan.RescaleGraph();
+                break;
+            case InteractableFunction.applicationExit:
+                myMan.ExitApplication();
+                break;
+            case InteractableFunction.particleToggle:
+                myMan.ToggleParticles();
                 break;
             default:
                 break;

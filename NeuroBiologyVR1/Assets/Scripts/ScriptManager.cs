@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
-using HoloToolkit.Sharing;
-using HoloToolkit.Sharing.Tests;
+using System.Collections.Generic;
+//using HoloToolkit.Sharing;
+//using HoloToolkit.Sharing.Tests;
+using HoloToolkit.Unity.InputModule;
+using UnityEngine.Windows.Speech;
+using System.Linq;
 
 public class ScriptManager : MonoBehaviour {
 
@@ -10,7 +13,7 @@ public class ScriptManager : MonoBehaviour {
         gui_canvas, rec_electrode, color_cube, player_obj, player_cam,
         plus_toggle, minus_toggle;
     public GameObject
-        pause_label, plus_label, minus_label;
+        pause_label, plus_label, minus_label, particle_label;
 
     public GameObject[] initial_toggles, secondary_toggles;
 
@@ -29,7 +32,7 @@ public class ScriptManager : MonoBehaviour {
     public Material bandMat_high;
     
     private bool graph_enabled = false;
-    public bool rec_enabled = false;
+    private bool rec_enabled = false;
     private bool isPaused = false;
 
     private bool spacePausing = false;
@@ -57,7 +60,8 @@ public class ScriptManager : MonoBehaviour {
 
     private Vector3 vec_oldPos = new Vector3(3.7f, 119.6f, -147.5f);    //position Vector at x=30;
 
-    
+    private KeywordRecognizer voice_command;
+    private Dictionary<string, System.Action> keywords;
 
     public bool isMultiplayer;
     public bool changedComponent { get; private set; }      //true if any component has been updated
@@ -78,13 +82,13 @@ public class ScriptManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         //for Sharing
-        if (isMultiplayer)
+        /*if (isMultiplayer)
         {
             CustomMessages.Instance.MessageHandlers[CustomMessages.TestMessageID.HeadTransform] = this.ReceiveMessage;
             SharingStage.Instance.SessionsTracker.UserJoined += OnSessionJoined;
             //SharingSessionTracker.Instance.SessionJoined += this.OnSessionJoined;
 
-        }
+        }*/
 
         //get scripts from GameObjects
         graph_script = gui_canvas.GetComponent<WMGTest>();
@@ -103,8 +107,60 @@ public class ScriptManager : MonoBehaviour {
         //graph_script.SetGraph(graph_enabled);
         //graph_script.set_recEnabled(rec_enabled);
 
+        keywords = new Dictionary<string, System.Action>();
+
+        keywords.Add("pause", () =>
+        {
+            if (!isPaused)
+                TogglePause();
+        });
+        keywords.Add("resume", () =>
+        {
+            if (isPaused)
+                TogglePause();
+        });
+
+        voice_command = new KeywordRecognizer(keywords.Keys.ToArray());
+        voice_command.OnPhraseRecognized += Voice_command_OnPhraseRecognized;
+        voice_command.Start();
 	}
-	
+
+    private void Voice_command_OnPhraseRecognized(PhraseRecognizedEventArgs args)
+    {
+        System.Action resultAction;
+        if(keywords.TryGetValue(args.text, out resultAction))
+        {
+            resultAction.Invoke();
+        }
+    }
+
+    public void ExitApplication()
+    {
+        Application.Quit();
+    }
+
+    public void ToggleParticles()
+    {
+        enableParticles = !enableParticles;
+        if (enableParticles)
+        {
+            particle_label.GetComponent<Text>().text = "Particles: On";
+        }
+        else
+        {
+            particle_label.GetComponent<Text>().text = "Particles: Off";
+        }
+    }
+
+    /*
+    private void OnDestroy()
+    {
+        voice_command.Stop();
+        voice_command.OnPhraseRecognized -= Voice_command_OnPhraseRecognized;
+    }
+    */
+
+    /*
     private void OnSessionJoined(Session session, User user)
     {
         int numUsers = session.GetUserCount();
@@ -168,11 +224,12 @@ public class ScriptManager : MonoBehaviour {
         updatedVec3 = newLocPos;
         CustomMessages.Instance.SendVec3(3, newLocPos);
     }
+    */
+    //private bool tempTestBool = true;
 
-    private bool tempTestBool = true;
-
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update () {
+        /*
         if (changedComponent)
         {
             if (passedPause)
@@ -211,17 +268,11 @@ public class ScriptManager : MonoBehaviour {
                 passedDiameter = false;
             }
             changedComponent = false;
-        }
+        }*/
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if(spacePause)
                 TogglePause();
-            else if (tempTestBool && graph_enabled)
-            {
-                Vector3 tVec = rec_electrode.transform.localPosition + new Vector3(0f, -50f, 0f);
-                Debug.Log(tVec);
-                SendUpdatedElectrode(tVec);
-            }
         }
         else if (isPaused)
             return;
@@ -278,8 +329,8 @@ public class ScriptManager : MonoBehaviour {
         }
 
         graph_script.ToggleGraph();
-        if (!passedGraph)
-            CustomMessages.Instance.SendByte(4, 1);
+        //if (!passedGraph)
+        //    CustomMessages.Instance.SendByte(4, 1);
     }
 
     public bool TogglePause()       //returns whether the time is NOW paused -> after calling TogglePause
@@ -292,6 +343,7 @@ public class ScriptManager : MonoBehaviour {
             color_script.enabled = false;
             rec_script.enabled = false;
             pause_label.GetComponent<Text>().text = "Resume";
+            pause_label.GetComponent<Text>().color = Color.red;
             audio_obj.GetComponent<AudioSource>().Stop();
             audio_isPlaying = false;
         }
@@ -302,10 +354,11 @@ public class ScriptManager : MonoBehaviour {
             color_script.enabled = true;
             rec_script.enabled = true;
             pause_label.GetComponent<Text>().text = "Pause";
+            pause_label.GetComponent<Text>().color = Color.white;
         }
         isPaused = !isPaused;
-        if (!passedPause)
-            CustomMessages.Instance.SendByte(1, 1);     
+        //if (!passedPause)
+        //    CustomMessages.Instance.SendByte(1, 1);     
         return isPaused;
     }
 
@@ -321,8 +374,8 @@ public class ScriptManager : MonoBehaviour {
         }
         audio_obj.GetComponent<AudioSource>().Play();
         audio_isPlaying = true;
-        if (!passedStim)
-            CustomMessages.Instance.SendByte(2, 1);
+        //if (!passedStim)
+        //    CustomMessages.Instance.SendByte(2, 1);
     }
 
     public void UpdateElectrode(int newEPos)
@@ -372,8 +425,8 @@ public class ScriptManager : MonoBehaviour {
 
         }
 
-        if (!passedDiameter)
-            CustomMessages.Instance.SendShort(7, (short)diam_val);
+        //if (!passedDiameter)
+        //    CustomMessages.Instance.SendShort(7, (short)diam_val);
     }
 
     public void RescaleGraph()
@@ -399,8 +452,8 @@ public class ScriptManager : MonoBehaviour {
 
         graph_script.Rescale_Voltage(newMax);
 
-        if (!passedRescale)
-            CustomMessages.Instance.SendByte(5, 1);
+        //if (!passedRescale)
+        //    CustomMessages.Instance.SendByte(5, 1);
     }
 
     public void DisableElectrode()
@@ -419,8 +472,12 @@ public class ScriptManager : MonoBehaviour {
             TogglePause();
         }
 
-        if (!passedMode)
-            CustomMessages.Instance.SendByte(6, 1);
+        //if (!passedMode)
+        //    CustomMessages.Instance.SendByte(6, 1);
     }
 
+    public void OnSpeechKeywordRecognized(SpeechKeywordRecognizedEventData eventData)
+    {
+        
+    }
 }

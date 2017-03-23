@@ -37,7 +37,7 @@ public class WMGTest : MonoBehaviour
     private bool analysis_mode = false;
 
     private Vector3 cur_pos;
-    private Vector3 alt_pos = new Vector3(0, -190, -100);
+    private Vector3 alt_pos = new Vector3(0, -190, -200);
 
     public long curcount = 0; 
 
