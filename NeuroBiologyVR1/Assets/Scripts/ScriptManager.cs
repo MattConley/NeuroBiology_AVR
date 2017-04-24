@@ -13,7 +13,7 @@ public class ScriptManager : MonoBehaviour {
         gui_canvas, rec_electrode, color_cube, player_obj, player_cam,
         plus_toggle, minus_toggle;
     public GameObject
-        pause_label, plus_label, minus_label, particle_label;
+        pause_label, plus_label, minus_label, particle_label, voice_label;
 
     public GameObject[] initial_toggles, secondary_toggles;
 
@@ -50,6 +50,8 @@ public class ScriptManager : MonoBehaviour {
     private bool analysis_mode = false;
 
     private bool audio_isPlaying=false;
+
+    private bool voiceEnabled = false;
 
     public int e_pos = 30;
     public bool spacePause;
@@ -122,7 +124,7 @@ public class ScriptManager : MonoBehaviour {
 
         voice_command = new KeywordRecognizer(keywords.Keys.ToArray());
         voice_command.OnPhraseRecognized += Voice_command_OnPhraseRecognized;
-        voice_command.Start();
+        //voice_command.Start();
 	}
 
     private void Voice_command_OnPhraseRecognized(PhraseRecognizedEventArgs args)
@@ -152,13 +154,20 @@ public class ScriptManager : MonoBehaviour {
         }
     }
 
-    /*
-    private void OnDestroy()
+    public void ToggleVoice()
     {
-        voice_command.Stop();
-        voice_command.OnPhraseRecognized -= Voice_command_OnPhraseRecognized;
+        voiceEnabled = !voiceEnabled;
+        if (voiceEnabled)
+        {
+            voice_command.Start();
+            voice_label.GetComponent<Text>().text = "Voice Control: On";
+        }
+        else
+        {
+            voice_command.Stop();
+            voice_label.GetComponent<Text>().text = "Voice Control: Off";
+        }
     }
-    */
 
     /*
     private void OnSessionJoined(Session session, User user)
