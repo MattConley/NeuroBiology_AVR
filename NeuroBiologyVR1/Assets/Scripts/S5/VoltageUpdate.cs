@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
+//using System.IO;
+
 
 public class VoltageUpdate : MonoBehaviour {
 
@@ -16,37 +17,52 @@ public class VoltageUpdate : MonoBehaviour {
     private bool isStim = false;
 
     public bool printGraph;
-    private StreamWriter graphWriter;
+    //private StreamWriter graphWriter;
     private string stringValues = "";
 
     private float aVal, bVal, cVal, dVal, uVal;
+
+    private float lowVal_act = -65f, highVal_act = 30f;
+    private float lowVal_pass = -65f, highVal_pass = -20f;
 
     public List<NeuronSlice> neuron_slices;// { get;  private set; }
 
     // Use this for initialization
     void Start()
     {
+        Time.fixedDeltaTime = 0.01f;
         //Debug.Log(slice_objects[0]);
         //set values
         v_rest = -65f;      //-65f
-        r_membrane = 10f;   //1f
+        r_membrane = 20f;   //10f
         capacitance = 1f;
-        v_applied = 10f;
-        r_a = 5f;           //1f
+        v_applied = 30f;
+        r_a = 1f;           //1f
         stimPos = 10;
 
-        //regular spiking values
+        //Initial u = b*v_rest
+
+        /*//regular spiking values
         aVal = .02f;    //.02f
         bVal = 0.2f;    //.2f
         cVal = -65f;    //-65f
         dVal = 8f;      //8f
         uVal = -13f;    //-13f
+        /**/
+
+        //fast spiking values
+        aVal = .1f;    //.1f
+        bVal = 0.2f;    //.2f
+        cVal = -65f;    //-65f
+        dVal = 2f;      //8f
+        uVal = -13f;    //-13f
 
         //instantiate list
         neuron_slices = new List<NeuronSlice>();
         numSlices = slice_objects.Length;
-        if(printGraph)
-            graphWriter = new StreamWriter(@"C:\Users\mattc\Desktop\GraphText\Full_Gamut.txt", true);
+
+        //if(printGraph)
+          //  graphWriter = new StreamWriter(@"C:\Users\mattc\Desktop\GraphText\Full_Gamut.txt", true);
 
         //stringValues = new string[numSlices];
 
@@ -60,19 +76,21 @@ public class VoltageUpdate : MonoBehaviour {
             NeuronSlice t_slice = new NeuronSlice();
             List<NeuronSlice> prevs = new List<NeuronSlice>();
             if(i == 0) {
-                t_slice = new NeuronSlice(slice_objects[i], v_rest, capacitance, r_a);
+                t_slice = new NeuronSlice(slice_objects[i], lowVal_pass, highVal_pass, v_rest, capacitance, r_a);
                 //t_slice.AddPrevSlice(neuron_slices[curLen - 1]);
             }
-            else if (i <= 8) //active bands
+            else if (i == 8) //active bands
             {
-                t_slice = new NeuronSlice(slice_objects[i], uVal, v_rest, aVal, bVal, cVal, dVal, capacitance, r_a);
-                //t_slice.AddPrevSlice(neuron_slices[curLen - 1]);
-                //neuron_slices[curLen - 1].AddNextSlice(t_slice);
+                t_slice = new NeuronSlice(slice_objects[i], lowVal_act, highVal_act, uVal, v_rest, aVal, bVal, cVal, dVal, capacitance, r_a+1f);
+            }
+            else if (i < 8) //active bands
+            {
+                t_slice = new NeuronSlice(slice_objects[i], lowVal_act, highVal_act, uVal, v_rest, aVal, bVal, cVal, dVal, capacitance, r_a);
             }
             else
             {
                 //prevs.Add(neuron_slices[curLen - 1]);
-                t_slice = new NeuronSlice(slice_objects[i], v_rest, capacitance, r_a);
+                t_slice = new NeuronSlice(slice_objects[i], lowVal_pass, highVal_pass, v_rest, capacitance, r_a);
                 //t_slice.AddPrevSlice(neuron_slices[curLen - 1]);
                 //neuron_slices[curLen - 1].AddNextSlice(t_slice);
             }
@@ -83,14 +101,14 @@ public class VoltageUpdate : MonoBehaviour {
 
     private void OnDestroy()
     {
-        if(printGraph)
-            graphWriter.Close();
+        //if(printGraph)
+        //    graphWriter.Close();
     }
 
     // Update is called once per frame
-    void Update () {
+   /* void Update () {
 		
-	}
+	}*/
 
     private void FixedUpdate()
     {
@@ -105,10 +123,8 @@ public class VoltageUpdate : MonoBehaviour {
         for(int k = 0; k < numSlices; k++)
         {
             int i = k;// numSlices - (k + 1);
-            float applied_current = ((isStim && (i == stimPos)) || neuron_slices[i].isActive) ? v_applied : 0f;
-            Debug.Log(applied_current);
-            NeuronSlice[] pRA = new NeuronSlice[2]; //2 is current max neighbors
-            NeuronSlice[] nRA = new NeuronSlice[2];
+            //float applied_current = ((isStim && (i == stimPos)) || neuron_slices[i].isActive) ? v_applied : 0f;
+            float applied_current = (isStim && (i == stimPos)) ? v_applied : 0f;
             List<NeuronSlice> neighborList = new List<NeuronSlice>();
             if (i > 12)
             {
@@ -130,25 +146,16 @@ public class VoltageUpdate : MonoBehaviour {
                 neighborList.Add(neuron_slices[i + 1]);
                 neighborList.Add(neuron_slices[i - 1]);
             }     
-            else //prev and next are +/- 1
+            else //if (!neuron_slices[i].isActive) //prev and next are +/- 1
             {
-                /*if (neuron_slices[i].isActive)
+                 
+                neighborList.Add(neuron_slices[i + 1]);                    
+                if(i != 0)
                 {
-                    //float acur = isStim ? 20f : 0f;
-                    float acur = 10f;
-                    float[] deltas = neuron_slices[i].CalcVoltageChange_Active(acur);
-                    newVals[i] = deltas[0];
-                    newUs[i] = deltas[1];
-                    Debug.Log(i);
-                }
-                else
-                {*/
-                    neighborList.Add(neuron_slices[i + 1]);
-                    
-                    if(i != 0)
+                    if (!neuron_slices[i].isActive)
                         neighborList.Add(neuron_slices[i - 1]);
-
-                //}
+                }
+                    //neighborList.Add(neuron_slices[i - 1]);
             }
             float[] retResult = neuron_slices[i].CalcVoltageChange(r_membrane, applied_current, neighborList);
             newVals[i] = retResult[0];
@@ -157,36 +164,38 @@ public class VoltageUpdate : MonoBehaviour {
         }
         isStim = false;
         stringValues = "";
-        string stringUValues = "";
+        //string stringUValues = "";
+        //float lowVal, highVal;
         for (int i = 0; i < numSlices; i++)
         {
             if (neuron_slices[i].isActive)
             {
                 neuron_slices[i].UpdateVal(newVals[i], timestep, newUs[i]);
+                slice_objects[i].GetComponent<MeshRenderer>().material.color = Color.red * ((neuron_slices[i].GetVal()) - neuron_slices[i].lowVal) / (neuron_slices[i].highVal - neuron_slices[i].lowVal);
                 /*if (printGraph)
                 {
                     stringValues = stringValues + neuron_slices[i].GetVal() + " ";
                 }*/
-            } else
+            }
+            else
+            {
                 neuron_slices[i].UpdateVal(newVals[i], timestep);
-            slice_objects[i].GetComponent<MeshRenderer>().material.color = Color.blue * (neuron_slices[i].GetVal());
-            if (printGraph)
+                slice_objects[i].GetComponent<MeshRenderer>().material.color = Color.blue * ((neuron_slices[i].GetVal()) - neuron_slices[i].lowVal) / (neuron_slices[i].highVal - neuron_slices[i].lowVal);
+            }
+            /*if (printGraph)
             {
                 stringValues = stringValues + neuron_slices[i].GetVal() + " ";
                 if (neuron_slices[i].isActive)
                     stringUValues = stringUValues + neuron_slices[i].GetU() + " ";
-            }
+            }*/
         }
 
+      
+        //if (printGraph)
+          //  graphWriter.WriteLine(stringValues + stringUValues + "\n");
         
-
-        //Debug.Log(neuron_slices[11].GetU());
-
-        if (printGraph)
-        {
-            graphWriter.WriteLine(stringValues + stringUValues + "\n");
-            //graphWriter.Flush
-        }
-        //Debug.Log(neuron_slices[10].GetVal());
     }
+
+    
+
 }

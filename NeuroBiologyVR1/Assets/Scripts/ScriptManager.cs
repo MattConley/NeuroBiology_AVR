@@ -45,7 +45,7 @@ public class ScriptManager : MonoBehaviour {
     private double time_scale = 0.00002;         //seconds * time_scale = simulated seconds
     private double time_converter = 20;          //seconds * time_converter = simulated microseconds
 
-    private int num_points = 25;    //was 55
+    private int num_points = 25;    //25 for hololens, 55 for pc
     private int pointBuffer = 4;       //pointBuffer * num_points = number of points stored in buffer
     private bool analysis_mode = false;
 
