@@ -12,8 +12,11 @@ public class VoltageUpdate : MonoBehaviour {
     public GameObject pulsePrefab;
 
     //public int numDendrites;
+    public bool isStimmable;
     public int rcIndex, triggerIndex;
     public int[] denIndices;
+
+    public LinkManager lMan;
 
     private float[] slice_volts, slice_v2;
 
@@ -38,7 +41,10 @@ public class VoltageUpdate : MonoBehaviour {
 
     public List<NeuronSlice> neuron_slices;// { get;  private set; }
 
-    private ConveyerDS rcVals;
+    public ConveyerDS rcVals { get; private set; }
+    private bool doneTmp = false;
+
+    public int neuronID;
 
     // Use this for initialization
     void Start()
@@ -121,12 +127,35 @@ public class VoltageUpdate : MonoBehaviour {
             }*/
             neuron_slices.Add(t_slice); //neuron_slices will contain all slices to have access to their renderers
         }//                         710
-        synList.Add(new Synapse(30, 30, -65, neuron_slices[0], neuron_slices[denIndices[0]], .002f));
-        synList.Add(new Synapse(30, 30, -65, neuron_slices[0], neuron_slices[denIndices[1]], .002f));
+        //synList.Add(new Synapse(30, 30, -65, neuron_slices[0], neuron_slices[denIndices[0]], .002f));
+        //synList.Add(new Synapse(30, 30, -65, neuron_slices[0], neuron_slices[denIndices[1]], .002f));
         int resolution = (int)(fadeMiliSeconds / timestep);
         rcVals = new ConveyerDS(resolution, v_rest, timestep);
-        rcVals.PreCompute(v_applied, .00015f); 
+        rcVals.PreCompute(v_applied, .00015f);
+        
         //Debug.Log("Finished Start");
+    }
+
+    public void AddSynapse(Synapse newSyn)
+    {
+        Debug.Log("Added");
+        synList.Add(newSyn);
+    }
+
+    public GameObject GetObject(int objIndex)
+    {
+        return slice_objects[objIndex];
+    }
+
+    public int GetDenIndex(int dIndex)
+    {
+        return denIndices[dIndex];
+    }
+
+    public NeuronSlice GetSlice(int sliceIndex)
+    {
+        Debug.Log(neuron_slices.Count);
+        return neuron_slices[sliceIndex];
     }
 
     private void OnDestroy()
@@ -137,6 +166,28 @@ public class VoltageUpdate : MonoBehaviour {
 
     private void FixedUpdate()
     {
+        if (!doneTmp)
+        {
+            if (!isStimmable)
+            {
+                switch (neuronID)
+                {
+                    case 3:
+                        lMan.CreateTestSynapse2(neuron_slices[denIndices[0]], rcVals);
+                        break;
+                    default:
+                        lMan.CreateTestSynapse(neuron_slices[denIndices[0]], rcVals);
+                        //lMan.CreateTestSynapse3(neuron_slices[denIndices[1]], rcVals);
+                        break;
+                }
+            }
+            else
+            {
+                lMan.CreateTestSynapse2(neuron_slices[denIndices[0]], rcVals);
+                //lMan.CreateTestSynapse3(neuron_slices[denIndices[0]], rcVals);
+            }
+            doneTmp = true;
+        }
         float[] newVals = new float[numSlices];
         float[] newUs = new float[numSlices];
         float[] retResult;
@@ -190,7 +241,7 @@ public class VoltageUpdate : MonoBehaviour {
             if (neuron_slices[i].isActive)
                 newUs[i] = retResult[1];
         }*/
-        float applied_current = isStim ? v_applied : 0f;
+        float applied_current = (isStim && isStimmable) ? v_applied : 0f;
         List<NeuronSlice> neighborList = new List<NeuronSlice>();
         neighborList.Add(neuron_slices[rcIndex]);
         retResult = neuron_slices[triggerIndex].CalcVoltageChange(r_membrane, applied_current, neighborList);
@@ -217,7 +268,7 @@ public class VoltageUpdate : MonoBehaviour {
             //Debug.Log("AP Here\n");
             if (apList[i].ShouldDespawn(timestep))
             {
-                TriggerSynapes(rcVals);
+                TriggerSynapes();
                 apList[i].Destroy();
                 apList.RemoveAt(i);
             }
@@ -262,8 +313,18 @@ public class VoltageUpdate : MonoBehaviour {
         }
         if(neuron_slices[triggerIndex].currentVal >= highVal_act)
         {
+            float axonSize;
+            switch (neuronID)
+            {
+                case 3:
+                    axonSize = 4.5f;
+                    break;
+                default:
+                    axonSize = 7.5f;
+                    break;
+            }
             //make new ActionPotential                                                                                                                          m/s m
-            ActionPotential newAP = new ActionPotential(neuron_obj, pulsePrefab, slice_objects[triggerIndex].transform.position, slice_objects[triggerIndex].transform.rotation, 1.7f, 7.5f);
+            ActionPotential newAP = new ActionPotential(neuron_obj, pulsePrefab, slice_objects[triggerIndex].transform.position, slice_objects[triggerIndex].transform.rotation, 1.7f, axonSize);
             //add the AP to the list
             apList.Add(newAP);
         }
@@ -282,11 +343,11 @@ public class VoltageUpdate : MonoBehaviour {
         //  graphWriter.WriteLine(stringValues + stringUValues + "\n");
 
     }
-    public void TriggerSynapes(ConveyerDS myVals)
+    public void TriggerSynapes()
     {
         for(int s = 0; s < synList.Count; s++)
         {
-            synList[s].Trigger(myVals);
+            synList[s].Trigger();
         }
     }
     

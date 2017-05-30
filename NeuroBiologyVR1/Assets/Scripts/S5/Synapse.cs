@@ -16,10 +16,16 @@ public class Synapse {
     private float gateVolt, sendVolt, restVolt;
     private NeuronSlice preSyn, postSyn, junct;
     private float denLen;
+    private ConveyerDS rcJunct;
 
     public void Destroy()
     {
         //delete pointers
+    }
+
+    public Synapse()
+    {
+
     }
 
     public Synapse(float tMax, float vP_i, float kP_i, float tSyn, float gSyn, float x1_i, float x2_i)
@@ -35,7 +41,7 @@ public class Synapse {
         x_2 = x2_i;
     }
 
-    public Synapse(float activeVoltage, float sendVoltage, float restVoltage, NeuronSlice sender, NeuronSlice receiver, float dLen)
+    public Synapse(float activeVoltage, float sendVoltage, float restVoltage, NeuronSlice sender, NeuronSlice receiver, float dLen, ConveyerDS junct)
     {
         //need length of dendrite
         isSimple = true;
@@ -45,9 +51,10 @@ public class Synapse {
         postSyn = receiver;
         restVolt = restVoltage;
         denLen = dLen;
+        rcJunct = junct;
     }
 
-    public float Trigger(ConveyerDS rcJunct)
+    public float Trigger()
     {
         //set the dendritic voltage based on g
         float denVolt = postSyn.currentVal;
