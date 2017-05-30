@@ -19,6 +19,12 @@ public class NeuronSlice {
     private Material slice_mat;
     private Color defColor;
 
+    private struct SliceConnection
+    {
+        public float axial_resistance;
+        NeuronSlice neiNeuron;
+    }
+
     private struct InitParams
     {
         public float a;
@@ -37,8 +43,9 @@ public class NeuronSlice {
 
     private InitParams myParams;
 
-    private List<PostSynapse> mySynapses;
+    private List<PostSynapse> mySynapses;       //not an array because of dynamic resizing
 
+    private SliceConnection[] myConnections;
 
     public float[] CalcVoltageChange(float r_membrane, float appCurrent, List<NeuronSlice> neighborSlices)
     {
@@ -120,6 +127,14 @@ public class NeuronSlice {
     {
         prevSlice = new List<NeuronSlice>();
         nextSlice = new List<NeuronSlice>();
+    }
+
+    public NeuronSlice(GameObject gObj)
+    {
+        isActive = false;
+        slice_obj = gObj;
+        slice_mat = gObj.GetComponent<MeshRenderer>().material;
+        defColor = slice_obj.GetComponent<MeshRenderer>().material.color;
     }
 
     public NeuronSlice(GameObject gObj, float rVal, float cVal, float raVal, List<NeuronSlice> pSlices)
@@ -216,6 +231,11 @@ public class NeuronSlice {
 
         mySynapses.Add(np);
         isDendrite = true;
+    }
+
+    public void SetVoltage(float newV)
+    {
+        currentVal = newV;
     }
 
     //removing synapse framework if necessary
