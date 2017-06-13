@@ -13,7 +13,6 @@ public class NeuronSlice {
 
 
     public bool isActive { get; private set; }
-    public bool isDendrite { get; private set; }
 
     private GameObject slice_obj;
     private Material slice_mat;
@@ -128,56 +127,10 @@ public class NeuronSlice {
         prevSlice = new List<NeuronSlice>();
         nextSlice = new List<NeuronSlice>();
     }
-
-    public NeuronSlice(GameObject gObj)
-    {
-        isActive = false;
-        slice_obj = gObj;
-        slice_mat = gObj.GetComponent<MeshRenderer>().material;
-        defColor = slice_obj.GetComponent<MeshRenderer>().material.color;
-    }
-
-    public NeuronSlice(GameObject gObj, float rVal, float cVal, float raVal, List<NeuronSlice> pSlices)
-    {
-        isActive = false;
-        prevSlice = new List<NeuronSlice>();
-        nextSlice = new List<NeuronSlice>();
-        slice_obj = gObj;
-        slice_mat = gObj.GetComponent<MeshRenderer>().material;
-        defColor = slice_obj.GetComponent<MeshRenderer>().material.color;
-        restVal = rVal;
-        currentVal = rVal;
-        capVal = cVal;
-        r_a = raVal;
-
-        for(int i = 0; i < pSlices.Count; i++)
-        {
-            prevSlice.Add(pSlices[i]);
-        }
-
-    }
-
-    public NeuronSlice(GameObject gObj, Synapse mySyn, float gSyn, float eSyn, bool excite, float lVal, float hVal, float rVal, float cVal, float raVal)
-    {
-        isActive = false;
-        isDendrite = true;
-        prevSlice = new List<NeuronSlice>();
-        nextSlice = new List<NeuronSlice>();
-        slice_obj = gObj;
-        slice_mat = gObj.GetComponent<MeshRenderer>().material;
-        defColor = slice_obj.GetComponent<MeshRenderer>().material.color;
-        lowVal = lVal;
-        highVal = hVal;
-        restVal = rVal;
-        currentVal = rVal;
-        capVal = cVal;
-        r_a = raVal;
-    }
-
+    //Constructor used for passive components
     public NeuronSlice(GameObject gObj, float lVal, float hVal, float rVal, float cVal, float raVal)
     {
         isActive = false;
-        isDendrite = false;
         prevSlice = new List<NeuronSlice>();
         nextSlice = new List<NeuronSlice>();
         slice_obj = gObj;
@@ -190,7 +143,7 @@ public class NeuronSlice {
         capVal = cVal;
         r_a = raVal;
     }
-
+    //Active compartment constructor
     public NeuronSlice(GameObject gObj, float lVal, float hVal, float initU, float initV, float aVar, float bVar, float cVar, float dVar, float capacitanceVal, float raVal)
     {
         isActive = true;
@@ -210,7 +163,8 @@ public class NeuronSlice {
         capVal = capacitanceVal;
         r_a = raVal;
     }
-
+    //These following methods should be implemented in the future to improve efficiency
+    //Right now the neighbors are calculated based on index, and only for the large neuron
     public void AddNextSlice(NeuronSlice new_slice)
     {
         nextSlice.Add(new_slice);
@@ -221,23 +175,9 @@ public class NeuronSlice {
         prevSlice.Add(new_slice);
     }
 
-    public void AddSynapse(Synapse sNew, float gSyn, float eSyn, bool excite)
-    {
-        PostSynapse np = new PostSynapse();
-        np.syn = sNew;
-        np.gSynMax = gSyn;
-        np.eSynVal = eSyn;
-        np.isExcite = excite;
-
-        mySynapses.Add(np);
-        isDendrite = true;
-    }
-
     public void SetVoltage(float newV)
     {
         currentVal = newV;
     }
-
-    //removing synapse framework if necessary
 
 }

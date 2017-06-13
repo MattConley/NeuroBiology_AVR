@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*The purpose of this class was to function as a data structure to add new stimulus
+ * to the current voltage.  There was a pre-calculated voltage curve which would be
+ * scaled by the driving force equation, (Gsyn*(V - Esyn)) and then added to the existing
+ * set of values. Unfortunately, The equation implemented with this data structure featured
+ * a faulty combination of two differing methods, and as a result was not a true /
+ * accurate simulation.  Currently, this class is not used, as the more accurate simulation 
+ * has no need for it.
+ */
 public class ConveyerDS {
 
     public int mySize { get; private set; }

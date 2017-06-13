@@ -13,21 +13,14 @@ public class Synapse {
     public bool isEnabled { get; private set; }
     public bool isSimple { get; private set; }
 
-    private float gateVolt, sendVolt, restVolt;
+    private float gateVolt, sendVolt, restVolt, revPotential;
     private NeuronSlice preSyn, postSyn, junct;
     private float denLen;
-    private ConveyerDS rcJunct;
+    private SummingJunction rcJunct;
 
-    public void Destroy()
-    {
-        //delete pointers
-    }
+    public Synapse() { }
 
-    public Synapse()
-    {
-
-    }
-
+    //This constructor is to be used with a non Srinivasan-Chiel synapse
     public Synapse(float tMax, float vP_i, float kP_i, float tSyn, float gSyn, float x1_i, float x2_i)
     {
         isSimple = false;
@@ -41,7 +34,8 @@ public class Synapse {
         x_2 = x2_i;
     }
 
-    public Synapse(float activeVoltage, float sendVoltage, float restVoltage, NeuronSlice sender, NeuronSlice receiver, float dLen, ConveyerDS junct)
+    //The synapse has references to the pre and post synaptic cells
+    public Synapse(float activeVoltage, float sendVoltage, float restVoltage, NeuronSlice sender, NeuronSlice receiver, float dLen, SummingJunction junct, float eSyn)
     {
         //need length of dendrite
         isSimple = true;
@@ -52,15 +46,18 @@ public class Synapse {
         restVolt = restVoltage;
         denLen = dLen;
         rcJunct = junct;
+        revPotential = eSyn;
     }
 
+    //Lets the summing junction know that the synapse has fired, then calculates Gsyn
+    //and sets the voltage at the rc Cell based thereon
     public float Trigger()
     {
-        //set the dendritic voltage based on g
-        float denVolt = postSyn.currentVal;
-        Debug.Log(denVolt);
-        rcJunct.DefaultStim((1f / (sendVolt - restVolt)) * (sendVolt - denVolt));
-        postSyn.SetVoltage(sendVolt);
+        rcJunct.Stimulate();
+        float g_val = rcJunct.GetG();
+        float newVolt = g_val * (revPotential - rcJunct.GetVoltage());
+        rcJunct.SetVoltage(newVolt + rcJunct.GetVoltage());
+
         return sendVolt;
     }
 
